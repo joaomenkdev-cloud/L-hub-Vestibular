@@ -1,0 +1,49 @@
+# ============================================================
+# 🔐 CREDENCIAIS E CONFIGURAÇÕES PRIVADAS — NUNCA VERSIONAR
+# ============================================================
+
+# Firebase — contém API Key, Project ID e outras chaves
+js/firebase-config.js
+.firebaserc
+
+# Banco de dados SQLite (contém dados reais de candidatos)
+back-end/lhub.db
+back-end/lhub.db-shm
+back-end/lhub.db-wal
+back-end/questoes_vestibular.db
+
+# ============================================================
+# .NET BUILD / BINÁRIOS
+# ============================================================
+back-end/bin/
+back-end/obj/
+
+# ============================================================
+# LOGS E ARQUIVOS TEMPORÁRIOS
+# ============================================================
+*.log
+firestore-debug.log
+database-debug.log
+ui-debug.log
+
+# ============================================================
+# SISTEMA OPERACIONAL
+# ============================================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# IDEs E EDITORES
+# ============================================================
+.vscode/
+.idea/
+*.user
+*.suo
+*.vs/
+
+# ============================================================
+# NODE / FIREBASE EMULATOR
+# ============================================================
+node_modules/
+.firebase/
