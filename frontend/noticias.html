@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noticias - L-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .search-box{position:relative;max-width:420px;margin-bottom:2rem}
+        .search-box input{width:100%;padding:.75rem 1rem .75rem 2.75rem;border:1.5px solid #e5e7eb;border-radius:12px;font-family:Inter,sans-serif;font-size:.9rem;background:#f9fafb;transition:.2s;color:#111827}
+        .search-box input:focus{outline:none;border-color:var(--primary);background:white;box-shadow:0 0 0 3px rgba(6,123,194,.1)}
+        .search-box i{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);color:#9ca3af}
+        .noticias-filters{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:2.5rem;align-items:center}
+        .noticias-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+        .nc{background:white;border-radius:20px;overflow:hidden;box-shadow:0 2px 16px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.05);transition:all .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;cursor:pointer}
+        .nc:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,.12)}
+        .nc-top{height:6px}
+        .nc-top.edital{background:linear-gradient(90deg,#067BC2,#3b82f6)}
+        .nc-top.urgente{background:linear-gradient(90deg,#ef4444,#f97316)}
+        .nc-top.novidade{background:linear-gradient(90deg,#a855f7,#6366f1)}
+        .nc-top.importante{background:linear-gradient(90deg,#f97316,#eab308)}
+        .nc-body{padding:1.5rem;flex:1;display:flex;flex-direction:column}
+        .nc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+        .nc-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;transition:transform .3s}
+        .nc:hover .nc-icon{transform:scale(1.1) rotate(-5deg)}
+        .nc-icon.edital{background:#eff6ff;color:#067BC2}
+        .nc-icon.urgente{background:#fef2f2;color:#ef4444}
+        .nc-icon.novidade{background:#faf5ff;color:#a855f7}
+        .nc-icon.importante{background:#fff7ed;color:#f97316}
+        .nc-badge{padding:.25rem .75rem;border-radius:100px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:white}
+        .nc-badge.edital{background:#067BC2}
+        .nc-badge.urgente{background:#ef4444}
+        .nc-badge.novidade{background:#a855f7}
+        .nc-badge.importante{background:#f97316}
+        .nc-titulo{font-size:1rem;font-weight:700;color:var(--primary-dark);line-height:1.45;margin-bottom:.5rem}
+        .nc-desc{font-size:.875rem;color:#6b6080;line-height:1.6;flex:1;margin-bottom:1rem}
+        .nc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:.875rem;border-top:1px solid #f3f4f6}
+        .nc-data{font-size:.78rem;color:#9ca3af;display:flex;align-items:center;gap:.4rem}
+        .nc-link{font-size:.8rem;font-weight:600;color:var(--primary);display:flex;align-items:center;gap:.35rem;text-decoration:none;transition:gap .2s}
+        .nc-link:hover{gap:.6rem}
+        .nc.destaque{grid-column:1/-1}
+        .nc.destaque .nc-titulo{font-size:1.15rem}
+        .nc.destaque .nc-desc{font-size:.9rem}
+        .results-count{font-size:.85rem;color:#6b7280;margin-bottom:1.25rem}
+        .results-count strong{color:var(--primary-dark)}
+        .empty-state{text-align:center;padding:4rem 2rem;color:#9ca3af;grid-column:1/-1}
+        .empty-state i{font-size:3rem;margin-bottom:1rem;opacity:.4;display:block}
+        @media(max-width:640px){.noticias-grid{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">]
+            <li><a href="index.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscricoes</a></li>
+            <li><a href="noticias.html" class="active"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Noticias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary"><i class="fa-solid fa-circle-user"></i> Minha Area</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Inicio</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscricoes</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Noticias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas Anteriores</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html"><i class="fa-solid fa-circle-user"></i> Minha Area</a>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <i class="fa-solid fa-chevron-right" style="font-size:.65rem;opacity:.5"></i>
+            <span>Noticias</span>
+        </div>
+        <h1><i class="fa-solid fa-newspaper" style="opacity:.7;margin-right:.5rem"></i>Notícias &amp; Avisos</h1>
+        <p>Fique por dentro de todas as atualizacoes dos principais vestibulares do Brasil</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="search-box animate-on-scroll">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchNoticias" placeholder="Buscar noticia...">
+        </div>
+        <div class="noticias-filters animate-on-scroll">
+            <span class="filter-label"><i class="fa-solid fa-sliders"></i>&nbsp;Filtrar:</span>
+            <button class="filter-btn active" data-cat="all">Todas</button>
+            <button class="filter-btn" data-cat="edital">Edital</button>
+            <button class="filter-btn" data-cat="urgente">Urgente</button>
+            <button class="filter-btn" data-cat="novidade">Novidade</button>
+            <button class="filter-btn" data-cat="importante">Importante</button>
+        </div>
+        <p class="results-count"><strong id="countNum">9</strong> noticias encontradas</p>
+        <div class="noticias-grid" id="noticiasGrid">
+
+            <div class="nc destaque animate-on-scroll" data-cat="edital">
+                <div class="nc-top edital"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon edital"><i class="fa-solid fa-file-lines"></i></div>
+                        <span class="nc-badge edital">Edital</span>
+                    </div>
+                    <h3 class="nc-titulo">Edital ENEM 2025 publicado &mdash; confira todas as datas e regras oficiais</h3>
+                    <p class="nc-desc">O INEP divulgou o edital completo do ENEM 2025. As provas serao aplicadas nos dias 9 e 10 de novembro de 2025. Inscricoes de 26 de maio a 6 de junho pelo Portal do INEP. Candidatos que desejam isencao da taxa devem solicitar ate 28 de marco. Leia o edital completo no site oficial.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 10 fev 2026 &middot; INEP / MEC</span>
+                        <a class="nc-link" href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem" target="_blank" rel="noopener">Ver no site oficial <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll" data-cat="urgente">
+                <div class="nc-top urgente"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon urgente"><i class="fa-solid fa-circle-exclamation"></i></div>
+                        <span class="nc-badge urgente">Urgente</span>
+                    </div>
+                    <h3 class="nc-titulo">Inscricoes ENEM 2025 encerram em 6 de junho</h3>
+                    <p class="nc-desc">Inscricoes abertas de 26 de maio a 6 de junho de 2025. Taxa de R$ 85,00. Acesse o Portal do INEP e garanta sua vaga antes do encerramento do prazo.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 12 fev 2026</span>
+                        <a class="nc-link" href="https://enem.inep.gov.br/" target="_blank" rel="noopener">Inscrever-se <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll delay-1" data-cat="urgente">
+                <div class="nc-top urgente"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon urgente"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <span class="nc-badge urgente">Urgente</span>
+                    </div>
+                    <h3 class="nc-titulo">SISU 2025: inscricoes abertas pelo site do MEC</h3>
+                    <p class="nc-desc">O SISU usa a nota do ENEM para ingresso em universidades federais. Utilize sua nota do ENEM 2024 para concorrer a vagas em todo o Brasil no sistema unificado do MEC.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 25 jan 2026</span>
+                        <a class="nc-link" href="https://sisu.mec.gov.br/" target="_blank" rel="noopener">Acessar SISU <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll" data-cat="edital">
+                <div class="nc-top edital"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon edital"><i class="fa-solid fa-university"></i></div>
+                        <span class="nc-badge edital">Edital</span>
+                    </div>
+                    <h3 class="nc-titulo">FUVEST 2026: edital e cronograma publicados</h3>
+                    <p class="nc-desc">A FUVEST publicou o edital 2026 para ingresso na USP. A primeira fase esta prevista para novembro de 2025. Mais de 11.000 vagas disponiveis em todos os cursos da universidade.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 05 fev 2026</span>
+                        <a class="nc-link" href="https://www.fuvest.br/" target="_blank" rel="noopener">Site FUVEST <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll delay-1" data-cat="edital">
+                <div class="nc-top edital"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon edital"><i class="fa-solid fa-flask"></i></div>
+                        <span class="nc-badge edital">Edital</span>
+                    </div>
+                    <h3 class="nc-titulo">UNICAMP 2026: datas e inscricoes disponiveis</h3>
+                    <p class="nc-desc">A COMVEST divulgou as datas do Vestibular UNICAMP 2026. Primeira fase em outubro de 2025. Inscricoes pelo site da COMVEST com taxa de R$ 170,00.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 03 fev 2026</span>
+                        <a class="nc-link" href="https://www.comvest.unicamp.br/" target="_blank" rel="noopener">Site COMVEST <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll delay-2" data-cat="importante">
+                <div class="nc-top importante"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon importante"><i class="fa-solid fa-location-dot"></i></div>
+                        <span class="nc-badge importante">Importante</span>
+                    </div>
+                    <h3 class="nc-titulo">Locais de prova do ENEM: divulgacao em outubro</h3>
+                    <p class="nc-desc">Os locais de aplicacao serao publicados no Cartao de Confirmacao de Inscricao, disponivel na Pagina do Participante a partir de outubro de 2025. Fique atento ao seu e-mail cadastrado.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 13 fev 2026</span>
+                        <a class="nc-link" href="https://enem.inep.gov.br/" target="_blank" rel="noopener">Pagina do participante <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll" data-cat="importante">
+                <div class="nc-top importante"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon importante"><i class="fa-solid fa-scroll"></i></div>
+                        <span class="nc-badge importante">Importante</span>
+                    </div>
+                    <h3 class="nc-titulo">Provas e gabaritos do ENEM 2024 para download</h3>
+                    <p class="nc-desc">O INEP disponibilizou os PDFs das provas e gabaritos do ENEM 2024 (Dia 1 e Dia 2) para download gratuito. Estude com as provas oficiais mais recentes diretamente pelo L-Hub.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 01 fev 2026</span>
+                        <a class="nc-link" href="provas.html">Baixar provas <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll delay-1" data-cat="novidade">
+                <div class="nc-top novidade"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon novidade"><i class="fa-solid fa-brain"></i></div>
+                        <span class="nc-badge novidade">Novidade</span>
+                    </div>
+                    <h3 class="nc-titulo">Simulados com IA para todas as disciplinas no L-Hub</h3>
+                    <p class="nc-desc">A plataforma L-Hub oferece simulados com questoes reais do ENEM, FUVEST e UNICAMP (2022-2025), com gabarito imediato e explicacao automatica por IA nos erros.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 08 fev 2026</span>
+                        <a class="nc-link" href="simulados.html">Fazer simulado <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nc animate-on-scroll delay-2" data-cat="novidade">
+                <div class="nc-top novidade"></div>
+                <div class="nc-body">
+                    <div class="nc-meta">
+                        <div class="nc-icon novidade"><i class="fa-solid fa-calendar-days"></i></div>
+                        <span class="nc-badge novidade">Novidade</span>
+                    </div>
+                    <h3 class="nc-titulo">Cronograma 2026 completo atualizado na plataforma</h3>
+                    <p class="nc-desc">O cronograma dos principais vestibulares de 2026 (ENEM, FUVEST, UNICAMP e outros) esta disponivel no L-Hub com todas as datas e prazos importantes para voce se organizar.</p>
+                    <div class="nc-footer">
+                        <span class="nc-data"><i class="fa-regular fa-calendar"></i> 28 jan 2026</span>
+                        <a class="nc-link" href="cronograma.html">Ver cronograma <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display:none">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <h3 style="color:#374151;margin-bottom:.5rem">Nenhuma noticia encontrada</h3>
+                <p>Tente outro termo ou remova o filtro aplicado</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparacao para processos seletivos.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscricoes</a></li>
+                    <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Noticias</a></li>
+                    <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+                    <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+                    <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+                    <li><a href="area-candidato.html"><i class="fa-solid fa-circle-user" style="opacity:.6;font-size:.8em"></i> Minha Area</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item"><i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com</div>
+                <div class="contact-item"><i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+<script src="../js/java.js"></script>
+<script>
+var cards = document.querySelectorAll(".nc[data-cat]");
+var emptyState = document.getElementById("emptyState");
+var countNum = document.getElementById("countNum");
+
+function applyFilters() {
+    var btn = document.querySelector(".filter-btn.active");
+    var cat = btn ? btn.dataset.cat : "all";
+    var q = document.getElementById("searchNoticias").value.toLowerCase();
+    var visible = 0;
+    cards.forEach(function(card) {
+        var catOk = cat === "all" || card.dataset.cat === cat;
+        var textOk = !q || card.textContent.toLowerCase().indexOf(q) >= 0;
+        var show = catOk && textOk;
+        card.style.display = show ? "" : "none";
+        if (show) visible++;
+    });
+    countNum.textContent = visible;
+    emptyState.style.display = visible === 0 ? "block" : "none";
+}
+
+document.querySelectorAll(".filter-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+        document.querySelectorAll(".filter-btn").forEach(function(b){ b.classList.remove("active"); });
+        btn.classList.add("active");
+        applyFilters();
+    });
+});
+
+document.getElementById("searchNoticias").addEventListener("input", applyFilters);
+
+cards.forEach(function(card) {
+    card.addEventListener("click", function(e) {
+        if (e.target.closest("a")) return;
+        var link = card.querySelector("a.nc-link");
+        if (!link) return;
+        var href = link.getAttribute("href");
+        if (href.indexOf("http") === 0) window.open(href, "_blank", "noopener");
+        else window.location.href = href;
+    });
+});
+</script>
+</body>
+</html>

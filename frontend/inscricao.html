@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta — L-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root {
+            --auth-bg: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #f0fdf4 100%);
+            --card-shadow: 0 20px 60px rgba(48,26,75,.12), 0 4px 16px rgba(6,123,194,.08);
+            --input-focus: rgba(6,123,194,.12);
+            --google-red: #ea4335;
+        }
+
+        body { background: var(--auth-bg); min-height: 100vh; }
+
+        /* ─── WRAPPER ─── */
+        .auth-page {
+            min-height: calc(100vh - 80px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 7rem 1.25rem 4rem;
+        }
+
+        /* ─── CARD ─── */
+        .auth-card {
+            background: white; border-radius: 28px;
+            box-shadow: var(--card-shadow);
+            padding: 3rem 3rem 2.5rem;
+            width: 100%; max-width: 480px;
+            position: relative; overflow: hidden;
+        }
+        .auth-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--primary), #6366f1, #a855f7);
+        }
+
+        /* ─── BRAND ─── */
+        .auth-brand {
+            text-align: center; margin-bottom: .25rem;
+            font-size: 2rem; font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .auth-card h2 { text-align: center; font-size: 1.3rem; color: var(--primary-dark); margin-bottom: .35rem; }
+        .auth-sub { text-align: center; color: #6b6080; font-size: .875rem; margin-bottom: 2rem; }
+
+        /* ─── GOOGLE BTN ─── */
+        .btn-google {
+            width: 100%; display: flex; align-items: center; justify-content: center;
+            gap: .75rem; padding: .875rem 1.25rem;
+            background: white; border: 2px solid #e5e7eb; border-radius: 14px;
+            font-size: .95rem; font-weight: 600; color: #374151;
+            font-family: 'Inter', sans-serif; cursor: pointer !important;
+            transition: all .2s; margin-bottom: 1.5rem;
+        }
+        .btn-google:hover { border-color: #d1d5db; background: #fafafa; box-shadow: 0 4px 16px rgba(0,0,0,.08); transform: translateY(-1px); }
+        .btn-google img { width: 20px; height: 20px; }
+
+        /* ─── DIVIDER ─── */
+        .auth-divider {
+            display: flex; align-items: center; gap: .875rem;
+            color: #9ca3af; font-size: .8rem; margin-bottom: 1.5rem;
+        }
+        .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: #f0ebff; }
+
+        /* ─── FORM ─── */
+        .auth-form .row { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem; }
+        .form-grp { margin-bottom: 1.1rem; }
+        .form-grp label { display: block; font-size: .825rem; font-weight: 600; color: #374151; margin-bottom: .4rem; }
+        .input-wrap { position: relative; }
+        .input-wrap i { position: absolute; left: .95rem; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: .85rem; pointer-events: none; }
+        .input-wrap input {
+            width: 100%; padding: .875rem 1rem .875rem 2.6rem;
+            border: 1.5px solid #e5e7eb; border-radius: 12px;
+            font-size: .9rem; font-family: 'Inter', sans-serif; color: #111827;
+            background: #f9fafb; transition: all .2s; box-sizing: border-box;
+        }
+        .input-wrap input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 3px var(--input-focus); }
+        .input-wrap input.error { border-color: #ef4444; background: #fff5f5; }
+        .input-wrap .toggle-pw {
+            position: absolute; right: .875rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer !important; color: #9ca3af; padding: 0;
+            font-size: .85rem;
+        }
+        .input-wrap .toggle-pw:hover { color: var(--primary); }
+        .form-grp .hint { font-size: .75rem; color: #9ca3af; margin-top: .3rem; }
+        .form-grp .field-error { font-size: .75rem; color: #ef4444; margin-top: .3rem; display: none; }
+
+        /* ─── STRENGTH BAR ─── */
+        .strength-bar { display: flex; gap: 4px; margin-top: .4rem; }
+        .strength-bar span {
+            flex: 1; height: 3px; border-radius: 2px;
+            background: #e5e7eb; transition: background .3s;
+        }
+        .strength-bar span.weak { background: #ef4444; }
+        .strength-bar span.medium { background: #f97316; }
+        .strength-bar span.good { background: #eab308; }
+        .strength-bar span.strong { background: #22c55e; }
+        .strength-label { font-size: .72rem; color: #9ca3af; margin-top: .25rem; }
+
+        /* ─── TERMS ─── */
+        .terms-row {
+            display: flex; align-items: flex-start; gap: .625rem;
+            font-size: .82rem; color: #6b7280; cursor: pointer; margin-bottom: 1.25rem;
+        }
+        .terms-row input[type="checkbox"] { width: 15px; height: 15px; margin-top: 1px; accent-color: var(--primary); flex-shrink: 0; }
+        .terms-row a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+        /* ─── SUBMIT ─── */
+        .btn-submit {
+            width: 100%; padding: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; border: none; border-radius: 14px;
+            font-size: 1rem; font-weight: 700; font-family: 'Inter', sans-serif;
+            cursor: pointer !important; transition: all .25s;
+            display: flex; align-items: center; justify-content: center; gap: .6rem;
+        }
+        .btn-submit:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(6,123,194,.35); }
+        .btn-submit:disabled { opacity: .7; transform: none; cursor: not-allowed !important; }
+
+        /* ─── FOOTER LINK ─── */
+        .auth-footer-link { text-align: center; margin-top: 1.25rem; font-size: .875rem; color: #6b6080; }
+        .auth-footer-link a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+        /* ─── ALERT ─── */
+        .auth-alert {
+            display: none; padding: .75rem 1rem; border-radius: 10px;
+            font-size: .85rem; margin-bottom: 1rem; align-items: center; gap: .5rem;
+        }
+        .auth-alert.error { background: #fef2f2; border: 1px solid #fca5a5; color: #dc2626; display: flex; }
+        .auth-alert.success { background: #f0fdf4; border: 1px solid #86efac; color: #15803d; display: flex; }
+
+        /* ─── SUCCESS SCREEN ─── */
+        #successScreen { display: none; text-align: center; }
+        .success-icon {
+            width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .success-icon i { font-size: 2rem; color: white; }
+        #successScreen h3 { font-size: 1.4rem; color: var(--primary-dark); margin-bottom: .5rem; }
+        #successScreen p { color: #6b6080; font-size: .9rem; margin-bottom: 1.5rem; line-height: 1.6; }
+
+        /* ─── 2FA SETUP SCREEN ─── */
+        #twoFAScreen { display: none; }
+        .totp-box {
+            background: #f8f5ff; border: 1px solid #e9d5ff; border-radius: 16px;
+            padding: 1.5rem; text-align: center; margin-bottom: 1.25rem;
+        }
+        .totp-box h4 { font-size: 1rem; color: var(--primary-dark); margin-bottom: .75rem; }
+        .totp-box p { font-size: .82rem; color: #6b6080; margin-bottom: 1rem; line-height: 1.5; }
+        #qrCodeContainer { display: flex; justify-content: center; margin: 1rem 0; }
+        #qrCodeContainer img { border-radius: 12px; border: 3px solid white; box-shadow: 0 4px 20px rgba(0,0,0,.12); }
+        .secret-code {
+            font-family: monospace; font-size: .85rem; background: white;
+            padding: .5rem 1rem; border-radius: 8px; word-break: break-all;
+            color: var(--primary-dark); border: 1px solid #e9d5ff;
+            display: inline-block; margin-bottom: .75rem;
+        }
+        .otp-inputs { display: flex; gap: .5rem; justify-content: center; margin: 1rem 0; }
+        .otp-inputs input {
+            width: 48px; height: 56px; text-align: center; font-size: 1.4rem; font-weight: 700;
+            border: 2px solid #e5e7eb; border-radius: 10px; font-family: 'Inter', sans-serif;
+            background: #f9fafb; color: var(--primary-dark); transition: .2s; box-sizing: border-box;
+        }
+        .otp-inputs input:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 3px var(--input-focus); }
+
+        /* ─── LOADING OVERLAY ─── */
+        #loadingOverlay {
+            position: fixed; inset: 0; background: rgba(255,255,255,.8);
+            backdrop-filter: blur(4px); z-index: 9999;
+            display: none; align-items: center; justify-content: center; flex-direction: column; gap: 1rem;
+        }
+        #loadingOverlay.show { display: flex; }
+        .spinner { width: 48px; height: 48px; border: 4px solid #f0ebff; border-top-color: var(--primary); border-radius: 50%; animation: spin .8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 520px) {
+            .auth-card { padding: 2rem 1.5rem; }
+            .auth-form .row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+<div id="loadingOverlay"><div class="spinner"></div><p style="color:#6b6080;font-weight:600">Aguarde...</p></div>
+
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html" class="active"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary"><i class="fa-solid fa-circle-user"></i> Minha Área</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscrições</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html"><i class="fa-solid fa-circle-user"></i> Minha Área</a>
+    </div>
+</header>
+
+<div class="auth-page">
+    <div class="auth-card">
+        <!-- ── CADASTRO ── -->
+        <div id="registerScreen">
+            <div class="auth-brand">L-Hub</div>
+            <h2>Crie sua conta gratuita</h2>
+            <p class="auth-sub">Acesse simulados, provas e muito mais</p>
+
+            <div class="auth-alert" id="regAlert"></div>
+
+            <!-- Google -->
+            <button class="btn-google" id="btnGoogle" onclick="loginGoogle()">
+                <img src="https://www.google.com/favicon.ico" alt="Google">
+                Continuar com Google
+            </button>
+
+            <div class="auth-divider">ou cadastre com e-mail</div>
+
+            <form class="auth-form" id="regForm" novalidate>
+                <div class="row">
+                    <div class="form-grp">
+                        <label for="nome">Nome</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="nome" placeholder="João" autocomplete="given-name" required>
+                        </div>
+                        <div class="field-error" id="erNome">Nome obrigatório</div>
+                    </div>
+                    <div class="form-grp">
+                        <label for="sobrenome">Sobrenome</label>
+                        <div class="input-wrap">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="sobrenome" placeholder="Silva" autocomplete="family-name" required>
+                        </div>
+                        <div class="field-error" id="erSobrenome">Sobrenome obrigatório</div>
+                    </div>
+                </div>
+
+                <div class="form-grp">
+                    <label for="email">E-mail</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" placeholder="joao@email.com" autocomplete="email" required>
+                    </div>
+                    <div class="field-error" id="erEmail">E-mail inválido</div>
+                </div>
+
+                <div class="form-grp">
+                    <label for="senha">Senha</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="senha" placeholder="Mínimo 8 caracteres" autocomplete="new-password" required minlength="8">
+                        <button type="button" class="toggle-pw" onclick="togglePw('senha','iconSenha')"><i id="iconSenha" class="fa-solid fa-eye"></i></button>
+                    </div>
+                    <div class="strength-bar"><span id="s1"></span><span id="s2"></span><span id="s3"></span><span id="s4"></span></div>
+                    <div class="strength-label" id="strengthLabel"></div>
+                    <div class="field-error" id="erSenha">Mínimo 8 caracteres</div>
+                </div>
+
+                <div class="form-grp">
+                    <label for="confirmar">Confirmar senha</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="confirmar" placeholder="Repita a senha" autocomplete="new-password" required>
+                        <button type="button" class="toggle-pw" onclick="togglePw('confirmar','iconConf')"><i id="iconConf" class="fa-solid fa-eye"></i></button>
+                    </div>
+                    <div class="field-error" id="erConfirmar">As senhas não coincidem</div>
+                </div>
+
+                <div class="form-grp">
+                    <label class="terms-row">
+                        <input type="checkbox" id="termos" required>
+                        Li e aceito os <a href="#" target="_blank">termos de uso</a> e a <a href="#" target="_blank">política de privacidade</a>.
+                    </label>
+                    <div class="field-error" id="erTermos">Você precisa aceitar os termos</div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="btnCadastro">
+                    <i class="fa-solid fa-user-plus"></i> Criar conta
+                </button>
+            </form>
+
+            <p class="auth-footer-link">Já tem conta? <a href="area-candidato.html">Entrar</a></p>
+        </div>
+
+        <!-- ── 2FA SETUP ── -->
+        <div id="twoFAScreen">
+            <div class="auth-brand">L-Hub</div>
+            <h2>Ativar verificação em 2 etapas</h2>
+            <p class="auth-sub">Proteja sua conta com um app autenticador</p>
+
+            <div class="totp-box">
+                <h4><i class="fa-solid fa-shield-halved" style="color:var(--primary);margin-right:.4rem"></i>Configure seu autenticador</h4>
+                <p>Escaneie o QR Code com o <strong>Google Authenticator</strong>, <strong>Authy</strong> ou outro app compatível. Em seguida, insira o código de 6 dígitos para confirmar.</p>
+                <div id="qrCodeContainer">
+                    <div style="width:160px;height:160px;background:#f0ebff;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#9ca3af">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                    </div>
+                </div>
+                <p style="font-size:.78rem;color:#9ca3af;margin-bottom:.5rem">Ou insira manualmente:</p>
+                <div class="secret-code" id="totpSecret">Gerando...</div>
+            </div>
+
+            <p style="font-size:.85rem;color:#374151;font-weight:600;text-align:center;margin-bottom:.75rem">Digite o código do app:</p>
+            <div class="otp-inputs" id="otpInputs">
+                <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+            </div>
+            <div class="auth-alert" id="twoFAAlert"></div>
+
+            <button class="btn-submit" id="btn2FA" onclick="verificar2FA()">
+                <i class="fa-solid fa-shield-check"></i> Verificar e ativar 2FA
+            </button>
+            <button onclick="pular2FA()" style="width:100%;margin-top:.75rem;padding:.75rem;background:none;border:1.5px solid #e5e7eb;border-radius:12px;font-family:Inter,sans-serif;font-size:.875rem;color:#6b6080;cursor:pointer;transition:.2s" onmouseover="this.style.borderColor='#d1d5db'" onmouseout="this.style.borderColor='#e5e7eb'">
+                Configurar depois
+            </button>
+        </div>
+
+        <!-- ── SUCESSO ── -->
+        <div id="successScreen">
+            <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+            <h3>Conta criada com sucesso!</h3>
+            <p>Bem-vindo ao <strong>L-Hub</strong>! Sua conta foi criada e você já pode acessar todos os recursos da plataforma.</p>
+            <button class="btn-submit" onclick="window.location.href='area-candidato.html'">
+                <i class="fa-solid fa-circle-user"></i> Ir para Minha Área
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparação para processos seletivos.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+                    <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+                    <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+                    <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+                    <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+                    <li><a href="area-candidato.html"><i class="fa-solid fa-circle-user" style="opacity:.6;font-size:.8em"></i> Minha Área</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item"><i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com</div>
+                <div class="contact-item"><i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { auth, db } from '../js/firebase-config.js';
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile, onAuthStateChanged, multiFactor, TotpMultiFactorGenerator, TotpSecret } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { doc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+const googleProvider = new GoogleAuthProvider();
+
+let currentUser = null;
+let totpSession  = null;
+let totpSecret   = null;
+
+// ── Se já logado, redireciona ──────────────────────────────
+onAuthStateChanged(auth, user => {
+    if (user) window.location.href = 'area-candidato.html';
+});
+
+// ── Helpers ───────────────────────────────────────────────
+function loading(show) {
+    document.getElementById('loadingOverlay').classList.toggle('show', show);
+}
+function showAlert(id, msg, type = 'error') {
+    const el = document.getElementById(id);
+    el.className = 'auth-alert ' + type;
+    el.innerHTML = `<i class="fa-solid fa-${type === 'error' ? 'circle-xmark' : 'circle-check'}"></i> ${msg}`;
+}
+
+// ── Toggle senha ──────────────────────────────────────────
+window.togglePw = function(inputId, iconId) {
+    const inp = document.getElementById(inputId);
+    const ico = document.getElementById(iconId);
+    if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fa-solid fa-eye-slash'; }
+    else { inp.type = 'password'; ico.className = 'fa-solid fa-eye'; }
+};
+
+// ── Força da senha ────────────────────────────────────────
+document.getElementById('senha').addEventListener('input', function() {
+    const v = this.value;
+    let score = 0;
+    if (v.length >= 8) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+    const bars = ['s1','s2','s3','s4'];
+    const labels = ['','Fraca','Média','Boa','Forte'];
+    const classes = ['','weak','medium','good','strong'];
+    bars.forEach((id, i) => {
+        document.getElementById(id).className = i < score ? classes[score] : '';
+    });
+    document.getElementById('strengthLabel').textContent = labels[score] ? `Senha ${labels[score]}` : '';
+    document.getElementById('strengthLabel').style.color = score <= 1 ? '#ef4444' : score <= 2 ? '#f97316' : score <= 3 ? '#eab308' : '#22c55e';
+});
+
+// ── OTP inputs auto-advance ───────────────────────────────
+document.querySelectorAll('#otpInputs input').forEach((inp, i, all) => {
+    inp.addEventListener('input', () => {
+        inp.value = inp.value.replace(/\D/g, '');
+        if (inp.value && i < all.length - 1) all[i + 1].focus();
+    });
+    inp.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !inp.value && i > 0) all[i - 1].focus();
+    });
+});
+
+// ── Salvar usuário no Firestore ────────────────────────────
+async function saveUser(user, extra = {}) {
+    await setDoc(doc(db, 'usuarios', user.uid), {
+        uid: user.uid,
+        email: user.email,
+        nome: user.displayName || extra.nome || '',
+        fotoUrl: user.photoURL || '',
+        provider: extra.provider || 'email',
+        twoFAAtivo: false,
+        criadoEm: serverTimestamp(),
+        ultimoLogin: serverTimestamp(),
+        ...extra
+    }, { merge: true });
+}
+
+// ── CADASTRO COM E-MAIL ────────────────────────────────────
+document.getElementById('regForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const nome     = document.getElementById('nome').value.trim();
+    const sob      = document.getElementById('sobrenome').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const senha    = document.getElementById('senha').value;
+    const conf     = document.getElementById('confirmar').value;
+    const termos   = document.getElementById('termos').checked;
+
+    // Validações
+    let ok = true;
+    function err(id, show) { document.getElementById(id).style.display = show ? 'block' : 'none'; if (show) ok = false; }
+    err('erNome',      !nome);
+    err('erSobrenome', !sob);
+    err('erEmail',     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
+    err('erSenha',     senha.length < 8);
+    err('erConfirmar', senha !== conf);
+    err('erTermos',    !termos);
+    if (!ok) return;
+
+    loading(true);
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, senha);
+        currentUser = cred.user;
+        await updateProfile(currentUser, { displayName: `${nome} ${sob}` });
+        await saveUser(currentUser, { nome: `${nome} ${sob}`, provider: 'email' });
+        loading(false);
+        mostrar2FASetup();
+    } catch(err) {
+        loading(false);
+        const msgs = {
+            'auth/email-already-in-use': 'Este e-mail já está cadastrado.',
+            'auth/invalid-email': 'E-mail inválido.',
+            'auth/weak-password': 'Senha fraca. Use pelo menos 8 caracteres.',
+        };
+        showAlert('regAlert', msgs[err.code] || 'Erro ao criar conta. Tente novamente.');
+    }
+});
+
+// ── LOGIN GOOGLE ───────────────────────────────────────────
+window.loginGoogle = async function() {
+    loading(true);
+    try {
+        const result = await signInWithPopup(auth, googleProvider);
+        currentUser = result.user;
+        await saveUser(currentUser, { provider: 'google' });
+        loading(false);
+        window.location.href = 'area-candidato.html';
+    } catch(err) {
+        loading(false);
+        if (err.code !== 'auth/popup-closed-by-user') {
+            showAlert('regAlert', 'Erro ao entrar com Google. Tente novamente.');
+        }
+    }
+};
+
+// ── 2FA SETUP ─────────────────────────────────────────────
+async function mostrar2FASetup() {
+    document.getElementById('registerScreen').style.display = 'none';
+    document.getElementById('twoFAScreen').style.display = 'block';
+
+    try {
+        const mfaUser = multiFactor(currentUser);
+        totpSession = await mfaUser.getSession();
+        totpSecret  = await TotpMultiFactorGenerator.generateSecret(totpSession);
+
+        const qrUrl = totpSecret.generateQrCodeUrl(
+            currentUser.email,
+            'L-Hub'
+        );
+
+        document.getElementById('totpSecret').textContent = totpSecret.secretKey;
+        document.getElementById('qrCodeContainer').innerHTML =
+            `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrUrl)}" alt="QR Code 2FA" width="160" height="160">`;
+    } catch(e) {
+        console.warn('2FA setup error:', e);
+        pular2FA();
+    }
+}
+
+window.verificar2FA = async function() {
+    const code = [...document.querySelectorAll('#otpInputs input')].map(i => i.value).join('');
+    if (code.length !== 6) { showAlert('twoFAAlert', 'Digite os 6 dígitos do código.'); return; }
+
+    document.getElementById('btn2FA').disabled = true;
+    document.getElementById('btn2FA').innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
+    try {
+        const cred = TotpMultiFactorGenerator.assertionForEnrollment(totpSecret, code);
+        await multiFactor(currentUser).enroll(cred, 'Autenticador L-Hub');
+        await setDoc(doc(db, 'usuarios', currentUser.uid), { twoFAAtivo: true }, { merge: true });
+        document.getElementById('twoFAScreen').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+    } catch(e) {
+        showAlert('twoFAAlert', 'Código inválido ou expirado. Tente novamente.');
+        document.getElementById('btn2FA').disabled = false;
+        document.getElementById('btn2FA').innerHTML = '<i class="fa-solid fa-shield-check"></i> Verificar e ativar 2FA';
+    }
+};
+
+window.pular2FA = function() {
+    document.getElementById('twoFAScreen').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+};
+</script>
+<script src="../js/java.js"></script>
+</body>
+</html>

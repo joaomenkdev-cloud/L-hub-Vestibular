@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ — L-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .inner-hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #301A4B 50%, #1a1025 100%);
+            padding: 7rem 0 5rem;
+            position: relative; overflow: hidden;
+        }
+        .inner-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 50% 70% at 50% 100%, rgba(132,188,218,0.12) 0%, transparent 70%);
+        }
+        .inner-hero .container { position: relative; z-index: 1; text-align: center; }
+        .inner-hero-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 100px; padding: 0.4rem 1rem;
+            font-size: 0.8rem; font-weight: 600; color: var(--primary-light);
+            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.5rem;
+        }
+        .inner-hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.2rem); font-weight: 800;
+            color: white; letter-spacing: -0.03em; margin-bottom: 1rem;
+        }
+        .inner-hero h1 span { color: var(--primary-light); }
+        .inner-hero p { font-size: 1.05rem; color: rgba(255,255,255,0.6); max-width: 480px; margin: 0 auto; }
+
+        /* SEARCH */
+        .faq-search-wrap {
+            max-width: 540px; margin: 2rem auto 0;
+            position: relative;
+        }
+        .faq-search-wrap i {
+            position: absolute; left: 1.1rem; top: 50%; transform: translateY(-50%);
+            color: rgba(255,255,255,0.4); font-size: 0.95rem;
+        }
+        #faqSearch {
+            width: 100%; padding: 0.9rem 1rem 0.9rem 2.75rem;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px; color: white; font-size: 0.95rem;
+            font-family: 'Inter', sans-serif; outline: none; transition: all 0.2s;
+        }
+        #faqSearch::placeholder { color: rgba(255,255,255,0.4); }
+        #faqSearch:focus { background: rgba(255,255,255,0.15); border-color: var(--primary-light); }
+
+        /* CATEGORIAS */
+        .faq-section { background: #f5f4f9; }
+        .faq-categories {
+            display: flex; flex-wrap: wrap; gap: 0.75rem;
+            justify-content: center; margin-bottom: 3rem;
+        }
+        .cat-btn {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 1.25rem; border-radius: 100px;
+            border: 1.5px solid rgba(48,26,75,0.15);
+            background: white; color: #5a5070; font-size: 0.88rem; font-weight: 500;
+            cursor: pointer !important; transition: all 0.2s;
+        }
+        .cat-btn:hover, .cat-btn.active {
+            background: var(--primary-dark); color: white; border-color: var(--primary-dark);
+        }
+        .cat-btn i { font-size: 0.82rem; }
+
+        /* ACCORDION */
+        .faq-group { margin-bottom: 2.5rem; }
+        .faq-group-title {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.12em; color: #9b8fb0; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .faq-group-title::after {
+            content: ''; flex: 1; height: 1px; background: rgba(48,26,75,0.1);
+        }
+
+        .faq-item {
+            background: white; border-radius: 14px;
+            border: 1px solid rgba(48,26,75,0.06);
+            margin-bottom: 0.75rem; overflow: hidden;
+            box-shadow: 0 2px 12px rgba(48,26,75,0.05);
+            transition: box-shadow 0.2s;
+        }
+        .faq-item.hidden { display: none; }
+        .faq-item:hover { box-shadow: 0 4px 20px rgba(48,26,75,0.1); }
+
+        .faq-question {
+            display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+            padding: 1.25rem 1.5rem; cursor: pointer !important;
+            font-size: 0.97rem; font-weight: 600; color: var(--primary-dark);
+        }
+        .faq-question-left { display: flex; align-items: center; gap: 0.85rem; }
+        .faq-q-icon {
+            width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+        .faq-toggle {
+            width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+            background: rgba(48,26,75,0.06); display: flex; align-items: center; justify-content: center;
+            color: var(--primary-dark); font-size: 0.7rem; transition: all 0.3s;
+        }
+        .faq-item.open .faq-toggle { background: var(--primary-dark); color: white; transform: rotate(180deg); }
+
+        .faq-answer {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(.4,0,.2,1), padding 0.3s;
+            font-size: 0.92rem; color: #5a5070; line-height: 1.75;
+        }
+        .faq-answer-inner { padding: 0 1.5rem 1.5rem 4rem; }
+        .faq-item.open .faq-answer { max-height: 500px; }
+        .faq-answer a { color: var(--primary); text-decoration: underline; }
+
+        /* NO RESULTS */
+        .faq-no-results {
+            text-align: center; padding: 3rem; display: none;
+            color: #6b6080;
+        }
+        .faq-no-results i { font-size: 2.5rem; margin-bottom: 1rem; color: #c4b8d8; display: block; }
+
+        /* CTA */
+        .faq-cta {
+            background: linear-gradient(135deg, var(--primary-dark), #301A4B);
+            border-radius: 24px; padding: 3rem; text-align: center; margin-top: 3rem;
+        }
+        .faq-cta h3 { font-size: 1.5rem; font-weight: 800; color: white; margin-bottom: 0.75rem; }
+        .faq-cta p { color: rgba(255,255,255,0.6); margin-bottom: 1.75rem; }
+        .faq-cta .btn { cursor: pointer !important; }
+    </style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary">
+                <i class="fa-solid fa-circle-user"></i> Minha Área
+            </a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscrições</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas Anteriores</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html"><i class="fa-solid fa-circle-user"></i> Minha Área</a>
+    </div>
+</header>
+
+<section class="inner-hero">
+    <div class="container">
+        <div class="inner-hero-badge"><i class="fa-solid fa-circle-question"></i> Ajuda</div>
+        <h1>Perguntas <span>Frequentes</span></h1>
+        <p>Encontre rapidamente respostas para as dúvidas mais comuns sobre a plataforma.</p>
+        <div class="faq-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="faqSearch" placeholder="Buscar pergunta...">
+        </div>
+    </div>
+</section>
+
+<!-- FAQ CONTENT -->
+<section class="section faq-section">
+    <div class="container">
+
+        <!-- CATEGORIAS -->
+        <div class="faq-categories">
+            <button class="cat-btn active" data-cat="all"><i class="fa-solid fa-border-all"></i> Todas</button>
+            <button class="cat-btn" data-cat="conta"><i class="fa-solid fa-user"></i> Conta</button>
+            <button class="cat-btn" data-cat="inscricao"><i class="fa-solid fa-pen-to-square"></i> Inscrição</button>
+            <button class="cat-btn" data-cat="simulados"><i class="fa-solid fa-brain"></i> Simulados</button>
+            <button class="cat-btn" data-cat="provas"><i class="fa-solid fa-scroll"></i> Provas</button>
+            <button class="cat-btn" data-cat="tecnico"><i class="fa-solid fa-gear"></i> Técnico</button>
+        </div>
+
+        <div id="faqNoResults" class="faq-no-results">
+            <i class="fa-solid fa-face-sad-tear"></i>
+            Nenhuma pergunta encontrada para "<span id="searchTerm"></span>"
+        </div>
+
+        <!-- GRUPO: CONTA -->
+        <div class="faq-group" data-group="conta">
+            <div class="faq-group-title"><i class="fa-solid fa-user"></i> Conta & Acesso</div>
+
+            <div class="faq-item" data-cat="conta">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-user-plus"></i></div>
+                        Como faço meu cadastro na plataforma?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <!-- ⬇️ EDITE: ajuste a resposta conforme o fluxo real de cadastro -->
+                        Acesse a página de <a href="inscricao.html">Inscrições</a> e preencha o formulário com seus dados pessoais. Após o envio, você receberá um e-mail de confirmação. Clique no link enviado para ativar sua conta e ter acesso completo à plataforma.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="conta">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-key"></i></div>
+                        Esqueci minha senha. O que faço?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <!-- ⬇️ EDITE: descreva o fluxo real de recuperação de senha -->
+                        Na tela de login, clique em "Esqueci minha senha". Informe o e-mail cadastrado e você receberá um link para redefinição. Verifique também a pasta de spam caso não encontre o e-mail na caixa de entrada.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="conta">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-trash-can"></i></div>
+                        Como excluo minha conta?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <!-- ⬇️ EDITE: coloque o canal correto de solicitação -->
+                        Para excluir sua conta, entre em contato pelo e-mail <strong>joaomenkdev@gmail.com</strong> com o assunto "Exclusão de conta" e informe o e-mail cadastrado. O processo será concluído em até [X dias úteis]. Após a exclusão, seus dados serão eliminados conforme nossa Política de Privacidade.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRUPO: INSCRIÇÃO -->
+        <div class="faq-group" data-group="inscricao">
+            <div class="faq-group-title"><i class="fa-solid fa-pen-to-square"></i> Inscrição no Processo Seletivo</div>
+
+            <div class="faq-item" data-cat="inscricao">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                        Qual é o prazo para inscrição?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        As inscrições para o ENEM 2026 geralmente ocorrem entre <strong>maio e junho</strong>. As datas exatas são divulgadas pelo INEP no início do ano. Acesse a página de <a href="cronograma.html">Cronograma</a> para conferir as datas atualizadas na plataforma. Fique atento: inscrições encerradas após o prazo não serão aceitas.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="inscricao">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-circle-dollar-to-slot"></i></div>
+                        A inscrição é gratuita?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        A inscrição no ENEM tem uma taxa de <strong>R$ 85,00</strong> (valor de referência — pode variar a cada edição). Candidatos que cursaram o ensino médio integralmente em escola pública, que são de baixa renda (CadÚnico) ou que estão em situação de vulnerabilidade social podem solicitar <strong>isenção da taxa</strong> gratuitamente. O pagamento é feito via boleto bancário gerado na <strong>Página do Participante</strong> no site do INEP.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="inscricao">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-file-pen"></i></div>
+                        Posso alterar meus dados após a inscrição?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Sim. Após a inscrição, o INEP abre um <strong>período de alteração de dados</strong> (geralmente algumas semanas após o encerramento das inscrições) em que é possível corrigir informações como nome, CPF, data de nascimento, endereço e opção de língua estrangeira. Alterações de local de prova <strong>não são permitidas</strong>. Fique atento ao <a href="cronograma.html">Cronograma</a> para não perder esse prazo.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRUPO: SIMULADOS -->
+        <div class="faq-group" data-group="simulados">
+            <div class="faq-group-title"><i class="fa-solid fa-brain"></i> Simulados & Estudo</div>
+
+            <div class="faq-item" data-cat="simulados">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-play"></i></div>
+                        Como acesso os simulados?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Acesse a página de <a href="simulados.html">Simulados</a> no menu principal. Você pode filtrar por disciplina e clicar em "Iniciar Simulado". É necessário ter uma conta cadastrada e estar logado para realizar os simulados e ter seu desempenho salvo.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="simulados">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                        Posso refazer um simulado?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <!-- ⬇️ EDITE: ajuste conforme o comportamento real da plataforma -->
+                        Sim! Você pode refazer os simulados quantas vezes quiser. Cada tentativa é registrada na sua área do candidato, permitindo que você acompanhe sua evolução ao longo do tempo.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="simulados">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-chart-bar"></i></div>
+                        Como vejo meu desempenho nos simulados?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Acesse <a href="area-candidato.html">Minha Área</a> após fazer login. Lá você encontra um painel com seu histórico de simulados, desempenho por disciplina e evolução ao longo do tempo.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRUPO: PROVAS -->
+        <div class="faq-group" data-group="provas">
+            <div class="faq-group-title"><i class="fa-solid fa-scroll"></i> Provas Anteriores</div>
+
+            <div class="faq-item" data-cat="provas">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-folder-open"></i></div>
+                        Onde encontro as provas anteriores?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Na seção <a href="provas.html">Provas</a> do menu principal você encontra todas as provas anteriores disponíveis, organizadas por ano e edição. Você pode fazer download dos PDFs diretamente.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="provas">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-file-pdf"></i></div>
+                        Onde fica o gabarito das provas?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <!-- ⬇️ EDITE: descreva onde o gabarito fica disponível -->
+                        Os gabaritos estão disponíveis na mesma página das provas, logo abaixo de cada arquivo. Após o prazo de recurso definido no edital, o gabarito definitivo é publicado.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRUPO: TÉCNICO -->
+        <div class="faq-group" data-group="tecnico">
+            <div class="faq-group-title"><i class="fa-solid fa-gear"></i> Suporte Técnico</div>
+
+            <div class="faq-item" data-cat="tecnico">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                        A plataforma funciona no celular?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Sim! A L-Hub é totalmente responsiva e funciona em dispositivos móveis (smartphones e tablets) nos navegadores mais recentes, como Chrome, Safari e Firefox.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="tecnico">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-bug"></i></div>
+                        Encontrei um erro na plataforma. Como reporto?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        <!-- ⬇️ EDITE: canal de suporte técnico -->
+                        Envie um e-mail para <a href="mailto:joaomenkdev@gmail.com">joaomenkdev@gmail.com</a> com o assunto "Bug Report", descrevendo o problema, a página onde ocorreu e, se possível, uma captura de tela. Nossa equipe de desenvolvimento investigará o mais breve possível.
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item" data-cat="tecnico">
+                <div class="faq-question">
+                    <div class="faq-question-left">
+                        <div class="faq-q-icon"><i class="fa-solid fa-wifi"></i></div>
+                        Preciso de internet para usar a plataforma?
+                    </div>
+                    <div class="faq-toggle"><i class="fa-solid fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    <div class="faq-answer-inner">
+                        Sim, a plataforma L-Hub requer conexão com a internet para funcionar. Não há modo offline disponível no momento.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="faq-cta">
+            <h3>Ainda com dúvidas?</h3>
+            <p>Nossa equipe está pronta para te ajudar. Entre em contato diretamente.</p>
+            <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+                <!-- ⬇️ EDITE: ajuste o e-mail e número de contato -->
+                <a href="mailto:joaomenkdev@gmail.com" class="btn btn-primary"><i class="fa-regular fa-envelope"></i> Enviar e-mail</a>
+                <a href="https://wa.me/5515998574050" target="_blank" class="btn btn-ghost" style="color:white;border-color:rgba(255,255,255,0.3);">
+                    <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparação para processos seletivos.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html">Inscrições</a></li>
+                    <li><a href="noticias.html">Notícias</a></li>
+                    <li><a href="provas.html">Provas</a></li>
+                    <li><a href="simulados.html">Simulado</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Empresa</h5>
+                <ul class="footer-links">
+                    <li><a href="sobre.html">Sobre nós</a></li>
+                    <li><a href="privacidade.html">Política de Privacidade</a></li>
+                    <li><a href="termos.html">Termos de Uso</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item"><i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com</div>
+                <div class="contact-item"><i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050</div>
+                <div class="contact-item"><i class="fa-solid fa-location-dot contact-icon"></i> St Aurélio Moura, 138 — Angatuba, SP</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/java.js"></script>
+<script>
+// ===== FAQ ACCORDION =====
+document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+    });
+});
+
+// ===== FILTRO POR CATEGORIA =====
+document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        document.querySelectorAll('.faq-item').forEach(item => {
+            if (cat === 'all' || item.dataset.cat === cat) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+        document.querySelectorAll('.faq-group').forEach(group => {
+            const visibleItems = group.querySelectorAll('.faq-item:not(.hidden)');
+            group.style.display = visibleItems.length === 0 ? 'none' : '';
+        });
+        checkNoResults();
+    });
+});
+
+// ===== BUSCA =====
+document.getElementById('faqSearch').addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.faq-item').forEach(item => {
+        const text = item.querySelector('.faq-question').textContent.toLowerCase()
+                   + item.querySelector('.faq-answer').textContent.toLowerCase();
+        item.classList.toggle('hidden', q && !text.includes(q));
+    });
+    document.querySelectorAll('.faq-group').forEach(group => {
+        const visible = group.querySelectorAll('.faq-item:not(.hidden)');
+        group.style.display = visible.length === 0 ? 'none' : '';
+    });
+    document.getElementById('searchTerm').textContent = this.value;
+    checkNoResults();
+    // reset categoria
+    if (q) {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-cat="all"]').classList.add('active');
+    }
+});
+
+function checkNoResults() {
+    const anyVisible = [...document.querySelectorAll('.faq-item')].some(i => !i.classList.contains('hidden'));
+    document.getElementById('faqNoResults').style.display = anyVisible ? 'none' : 'block';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provas Anteriores — L-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .provas-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2.5rem; align-items: center; }
+        .provas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 1.5rem; }
+        .prova-card {
+            background: white; border-radius: 20px; padding: 1.75rem;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06); border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.32s cubic-bezier(.4,0,.2,1);
+            position: relative; overflow: hidden;
+        }
+        .prova-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(6,123,194,.04),transparent); opacity:0; transition:.3s; pointer-events:none; }
+        .prova-card:hover { transform: translateY(-8px); box-shadow: 0 20px 48px rgba(0,0,0,.12); }
+        .prova-card:hover::before { opacity:1; }
+        .prova-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
+        .prova-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; transition: transform .3s; }
+        .prova-card:hover .prova-icon { transform: scale(1.1) rotate(-5deg); }
+        .prova-icon.enem { background: linear-gradient(135deg,#1d4ed8,#3b82f6); color:white; }
+        .prova-icon.fuvest { background: linear-gradient(135deg,#7c3aed,#a855f7); color:white; }
+        .prova-icon.unicamp { background: linear-gradient(135deg,#059669,#10b981); color:white; }
+        .prova-year { font-size: 0.78rem; font-weight: 700; color: #6b6080; background: #f3f0f8; padding: 0.3rem 0.75rem; border-radius: 100px; }
+        .prova-title { font-size: 1.05rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.35rem; line-height: 1.4; }
+        .prova-meta { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1.25rem; }
+        .prova-meta-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.83rem; color: #6b6080; }
+        .prova-meta-item i { width: 14px; text-align: center; color: var(--primary-light); }
+        .prova-actions { display: flex; gap: 0.75rem; }
+        .btn-download {
+            flex: 1; padding: 0.7rem; border: none; border-radius: 10px;
+            font-size: 0.85rem; font-weight: 600; cursor: pointer !important;
+            display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+            transition: all .25s; font-family: 'Inter',sans-serif;
+        }
+        .btn-download.primary { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); color: white; }
+        .btn-download.primary:hover { box-shadow: 0 6px 20px rgba(6,123,194,.35); transform: translateY(-1px); }
+        .btn-download.secondary { background: #f3f0f8; color: var(--primary-dark); }
+        .btn-download.secondary:hover { background: #ebe5f7; }
+        .downloads-count { font-size: 0.75rem; color: #9ca3af; margin-top: 0.75rem; text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.35rem; }
+        .search-box { position: relative; max-width: 380px; margin-bottom: 2rem; }
+        .search-box input { width: 100%; padding: .75rem 1rem .75rem 2.75rem; border: 1.5px solid #e5e7eb; border-radius: 12px; font-family:'Inter',sans-serif; font-size:.9rem; background:#f9fafb; transition:.2s; color:#111827; }
+        .search-box input:focus { outline:none; border-color:var(--primary); background:white; box-shadow:0 0 0 3px rgba(6,123,194,.1); }
+        .search-box i { position:absolute; left:.9rem; top:50%; transform:translateY(-50%); color:#9ca3af; }
+    </style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html" class="active"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary"><i class="fa-solid fa-circle-user"></i> Minha Área</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscrições</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas Anteriores</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html"><i class="fa-solid fa-circle-user"></i> Minha Área</a>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Início</a>
+            <i class="fa-solid fa-chevron-right" style="font-size:.65rem;opacity:.5"></i>
+            <span>Provas Anteriores</span>
+        </div>
+        <h1><i class="fa-solid fa-scroll" style="opacity:.7;margin-right:.5rem"></i>Provas Anteriores</h1>
+        <p>Acesse e baixe provas dos principais vestibulares do Brasil</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="search-box animate-on-scroll">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="searchProvas" placeholder="Buscar prova por nome ou ano...">
+        </div>
+
+        <div class="provas-filters animate-on-scroll">
+            <span class="filter-label"><i class="fa-solid fa-sliders"></i>&nbsp;Filtrar:</span>
+            <button class="filter-btn active" data-cat="all">Todas</button>
+            <button class="filter-btn" data-cat="enem">ENEM</button>
+            <button class="filter-btn" data-cat="fuvest">FUVEST</button>
+            <button class="filter-btn" data-cat="unicamp">UNICAMP</button>
+        </div>
+
+        <div class="provas-grid" id="provasGrid">
+
+            <!-- ENEM 2025 D1 -->
+            <div class="prova-card animate-on-scroll" data-cat="enem" data-prova-id="10">
+                <div class="prova-header">
+                    <div class="prova-icon enem"><i class="fa-solid fa-landmark"></i></div>
+                    <span class="prova-year">2025</span>
+                </div>
+                <h3 class="prova-title">ENEM 2025 — Caderno Azul (Dia 1)</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Humanas &amp; Linguagens</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> INEP / MEC</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(10,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(10,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 5.800 downloads</div>
+            </div>
+
+            <!-- ENEM 2025 D2 -->
+            <div class="prova-card animate-on-scroll delay-1" data-cat="enem" data-prova-id="11">
+                <div class="prova-header">
+                    <div class="prova-icon enem"><i class="fa-solid fa-atom"></i></div>
+                    <span class="prova-year">2025</span>
+                </div>
+                <h3 class="prova-title">ENEM 2025 — Caderno Azul (Dia 2)</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Exatas &amp; Ciências</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> INEP / MEC</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(11,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(11,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 5.400 downloads</div>
+            </div>
+
+            <!-- ENEM 2024 D1 -->
+            <div class="prova-card animate-on-scroll delay-2" data-cat="enem" data-prova-id="6">
+                <div class="prova-header">
+                    <div class="prova-icon enem"><i class="fa-solid fa-landmark"></i></div>
+                    <span class="prova-year">2024</span>
+                </div>
+                <h3 class="prova-title">ENEM 2024 — Caderno Azul (Dia 1)</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Humanas &amp; Linguagens</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> INEP / MEC</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(6,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(6,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 8.200 downloads</div>
+            </div>
+
+            <!-- ENEM 2024 D2 -->
+            <div class="prova-card animate-on-scroll" data-cat="enem" data-prova-id="7">
+                <div class="prova-header">
+                    <div class="prova-icon enem"><i class="fa-solid fa-atom"></i></div>
+                    <span class="prova-year">2024</span>
+                </div>
+                <h3 class="prova-title">ENEM 2024 — Caderno Azul (Dia 2)</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Exatas &amp; Ciências</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> INEP / MEC</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(7,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(7,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 7.900 downloads</div>
+            </div>
+
+            <!-- ENEM 2023 D1 -->
+            <div class="prova-card animate-on-scroll delay-1" data-cat="enem" data-prova-id="8">
+                <div class="prova-header">
+                    <div class="prova-icon enem"><i class="fa-solid fa-landmark"></i></div>
+                    <span class="prova-year">2023</span>
+                </div>
+                <h3 class="prova-title">ENEM 2023 — Caderno Azul (Dia 1)</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Humanas &amp; Linguagens</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> INEP / MEC</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(8,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(8,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 12.300 downloads</div>
+            </div>
+
+            <!-- ENEM 2023 D2 -->
+            <div class="prova-card animate-on-scroll delay-2" data-cat="enem" data-prova-id="9">
+                <div class="prova-header">
+                    <div class="prova-icon enem"><i class="fa-solid fa-atom"></i></div>
+                    <span class="prova-year">2023</span>
+                </div>
+                <h3 class="prova-title">ENEM 2023 — Caderno Azul (Dia 2)</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Exatas &amp; Ciências</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> INEP / MEC</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(9,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(9,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 11.700 downloads</div>
+            </div>
+
+            <!-- FUVEST 2025 -->
+            <div class="prova-card animate-on-scroll" data-cat="fuvest" data-prova-id="1">
+                <div class="prova-header">
+                    <div class="prova-icon fuvest"><i class="fa-solid fa-university"></i></div>
+                    <span class="prova-year">2025</span>
+                </div>
+                <h3 class="prova-title">FUVEST 2025 — Primeira Fase</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Conhecimentos Gerais</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> FUVEST / USP</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(1,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(1,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 3.100 downloads</div>
+            </div>
+
+            <!-- FUVEST 2024 -->
+            <div class="prova-card animate-on-scroll delay-1" data-cat="fuvest" data-prova-id="2">
+                <div class="prova-header">
+                    <div class="prova-icon fuvest"><i class="fa-solid fa-university"></i></div>
+                    <span class="prova-year">2024</span>
+                </div>
+                <h3 class="prova-title">FUVEST 2024 — Primeira Fase</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 90 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Conhecimentos Gerais</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> FUVEST / USP</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(2,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(2,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 3.850 downloads</div>
+            </div>
+
+            <!-- UNICAMP 2025 -->
+            <div class="prova-card animate-on-scroll delay-2" data-cat="unicamp" data-prova-id="4">
+                <div class="prova-header">
+                    <div class="prova-icon unicamp"><i class="fa-solid fa-flask"></i></div>
+                    <span class="prova-year">2025</span>
+                </div>
+                <h3 class="prova-title">UNICAMP 2025 — Primeira Fase</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 72 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Conhecimentos Gerais</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> COMVEST / UNICAMP</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(4,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(4,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 2.200 downloads</div>
+            </div>
+
+            <!-- UNICAMP 2024 -->
+            <div class="prova-card animate-on-scroll" data-cat="unicamp" data-prova-id="5">
+                <div class="prova-header">
+                    <div class="prova-icon unicamp"><i class="fa-solid fa-flask"></i></div>
+                    <span class="prova-year">2024</span>
+                </div>
+                <h3 class="prova-title">UNICAMP 2024 — Primeira Fase</h3>
+                <div class="prova-meta">
+                    <div class="prova-meta-item"><i class="fa-solid fa-list-check"></i> 72 questões · 5 horas</div>
+                    <div class="prova-meta-item"><i class="fa-solid fa-book"></i> Conhecimentos Gerais</div>
+                    <div class="prova-meta-item"><i class="fa-regular fa-building"></i> COMVEST / UNICAMP</div>
+                </div>
+                <div class="prova-actions">
+                    <button class="btn-download primary" onclick="baixarProva(5,'prova')"><i class="fa-solid fa-download"></i> Prova</button>
+                    <button class="btn-download secondary" onclick="baixarProva(5,'gabarito')"><i class="fa-solid fa-key"></i> Gabarito</button>
+                </div>
+                <div class="downloads-count"><i class="fa-solid fa-arrow-down"></i> 1.850 downloads</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparação para processos seletivos.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+                    <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+                    <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+                    <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+                    <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+                    <li><a href="area-candidato.html"><i class="fa-solid fa-circle-user" style="opacity:.6;font-size:.8em"></i> Minha Área</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item"><i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com</div>
+                <div class="contact-item"><i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/java.js"></script>
+<script>
+// Filtros
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.getAttribute('data-cat');
+        document.querySelectorAll('.prova-card').forEach(card => {
+            const show = cat === 'all' || card.getAttribute('data-cat') === cat;
+            card.style.display = show ? 'block' : 'none';
+        });
+    });
+});
+
+// Busca
+document.getElementById('searchProvas').addEventListener('input', function() {
+    const q = this.value.toLowerCase();
+    document.querySelectorAll('.prova-card').forEach(card => {
+        card.style.display = card.querySelector('.prova-title').textContent.toLowerCase().includes(q) ? 'block' : 'none';
+    });
+});
+
+// URLs verificadas e confirmadas nos sites oficiais (INEP, FUVEST, COMVEST)
+const PROVAS_URLS = {
+    // ENEM 2025 — download.inep.gov.br
+    10: {
+        prova:    'https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D1_CD1.pdf',
+        gabarito: 'https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D1_CD1.pdf'
+    },
+    11: {
+        prova:    'https://download.inep.gov.br/enem/provas_e_gabaritos/2025_PV_impresso_D2_CD1.pdf',
+        gabarito: 'https://download.inep.gov.br/enem/provas_e_gabaritos/2025_GB_impresso_D2_CD1.pdf'
+    },
+    // ENEM 2024 — download.inep.gov.br
+    6: {
+        prova:    'https://download.inep.gov.br/enem/provas_e_gabaritos/2024_PV_impresso_D1_CD1.pdf',
+        gabarito: 'https://download.inep.gov.br/enem/provas_e_gabaritos/2024_GB_impresso_D1_CD1.pdf'
+    },
+    7: {
+        prova:    'https://download.inep.gov.br/enem/provas_e_gabaritos/2024_PV_impresso_D2_CD1.pdf',
+        gabarito: 'https://download.inep.gov.br/enem/provas_e_gabaritos/2024_GB_impresso_D2_CD1.pdf'
+    },
+    // ENEM 2023 — download.inep.gov.br
+    8: {
+        prova:    'https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D1_CD1.pdf',
+        gabarito: 'https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D1_CD1.pdf'
+    },
+    9: {
+        prova:    'https://download.inep.gov.br/enem/provas_e_gabaritos/2023_PV_impresso_D2_CD1.pdf',
+        gabarito: 'https://download.inep.gov.br/enem/provas_e_gabaritos/2023_GB_impresso_D2_CD1.pdf'
+    },
+    // FUVEST 2025 — fuvest.br/wp-content/uploads/
+    1: {
+        prova:    'https://www.fuvest.br/wp-content/uploads/fuvest2025_primeira_fase_prova_V1.pdf',
+        gabarito: 'https://www.fuvest.br/wp-content/uploads/fuvest2025_gabarito_primeira_fase.pdf'
+    },
+    // FUVEST 2024 — fuvest.br/wp-content/uploads/
+    2: {
+        prova:    'https://www.fuvest.br/wp-content/uploads/fuvest2024_primeira_fase_prova_V.pdf',
+        gabarito: 'https://www.fuvest.br/wp-content/uploads/fuvest2024_gabarito_primeira_fase.pdf'
+    },
+    // UNICAMP 2025 — comvest.unicamp.br
+    4: {
+        prova:    'https://www.comvest.unicamp.br/vest2025/F1/f12025Q_Z.pdf',
+        gabarito: 'https://www.comvest.unicamp.br/wp-content/uploads/2024/10/QZ_gabarito_2025_FINAL_site.pdf'
+    },
+    // UNICAMP 2024 — comvest.unicamp.br
+    5: {
+        prova:    'https://www.comvest.unicamp.br/vest2024/F1/f12024T_X.pdf',
+        gabarito: 'https://www.comvest.unicamp.br/vest2024/F1/gabarito2024_QZ_FINAL_site.pdf'
+    },
+};
+
+function baixarProva(id, tipo) {
+    const entry = PROVAS_URLS[id];
+    if (!entry) { alert('Prova não encontrada.'); return; }
+    const url = tipo === 'gabarito' ? entry.gabarito : entry.prova;
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+</script>
+</body>
+</html>

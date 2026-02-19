@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade — L-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .inner-hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1a1025 60%, #301A4B 100%);
+            padding: 7rem 0 5rem;
+            position: relative; overflow: hidden;
+        }
+        .inner-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 60% at 20% 50%, rgba(6,123,194,0.18) 0%, transparent 70%);
+        }
+        .inner-hero .container { position: relative; z-index: 1; }
+        .inner-hero-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 100px; padding: 0.4rem 1rem;
+            font-size: 0.8rem; font-weight: 600; color: var(--primary-light);
+            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.5rem;
+        }
+        .inner-hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+            color: white; letter-spacing: -0.03em; margin-bottom: 1rem;
+        }
+        .inner-hero h1 span { color: var(--primary-light); }
+        .inner-hero p { font-size: 1rem; color: rgba(255,255,255,0.6); max-width: 500px; }
+        .inner-hero .update-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(132,188,218,0.15); border: 1px solid rgba(132,188,218,0.3);
+            border-radius: 100px; padding: 0.35rem 0.9rem;
+            font-size: 0.8rem; color: var(--primary-light); margin-top: 1.25rem;
+        }
+
+        /* ===== LAYOUT ===== */
+        .policy-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 3rem;
+            align-items: start;
+            padding: 4rem 0;
+        }
+        @media(max-width:860px){ .policy-layout { grid-template-columns: 1fr; } .policy-sidebar { display: none; } }
+
+        /* SIDEBAR NAV */
+        .policy-sidebar {
+            position: sticky; top: 100px;
+            background: white; border-radius: 16px;
+            border: 1px solid rgba(48,26,75,0.08);
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(48,26,75,0.06);
+        }
+        .policy-sidebar h6 {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: #9b8fb0; margin-bottom: 1rem;
+        }
+        .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.75rem; border-radius: 8px;
+            font-size: 0.88rem; color: #5a5070;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: rgba(6,123,194,0.08); color: var(--primary);
+        }
+        .sidebar-nav a i { font-size: 0.75rem; opacity: 0.6; min-width: 14px; }
+
+        /* CONTENT */
+        .policy-content section {
+            background: white; border-radius: 20px;
+            padding: 2.25rem; margin-bottom: 1.5rem;
+            border: 1px solid rgba(48,26,75,0.06);
+            box-shadow: 0 4px 20px rgba(48,26,75,0.05);
+        }
+        .policy-content section h2 {
+            font-size: 1.25rem; font-weight: 700; color: var(--primary-dark);
+            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;
+        }
+        .policy-content section h2 .section-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.9rem; flex-shrink: 0;
+        }
+        .policy-content p { font-size: 0.95rem; color: #5a5070; line-height: 1.8; margin-bottom: 0.85rem; }
+        .policy-content p:last-child { margin-bottom: 0; }
+        .policy-content ul { margin: 0.75rem 0 0.85rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
+        .policy-content ul li { font-size: 0.93rem; color: #5a5070; line-height: 1.65; }
+        .policy-content strong { color: var(--primary-dark); }
+
+        .highlight-box {
+            background: rgba(6,123,194,0.06); border: 1px solid rgba(6,123,194,0.18);
+            border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0;
+            font-size: 0.9rem; color: var(--primary-dark);
+            display: flex; gap: 0.75rem; align-items: flex-start;
+        }
+        .highlight-box i { color: var(--primary); margin-top: 0.1rem; flex-shrink: 0; }
+
+        .contact-policy {
+            background: linear-gradient(135deg, var(--primary-dark), #301A4B);
+            border-radius: 20px; padding: 2.25rem; color: white;
+        }
+        .contact-policy h2 { color: white !important; }
+        .contact-policy p { color: rgba(255,255,255,0.65) !important; }
+        .contact-policy a { color: var(--primary-light); }
+    </style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary">
+                <i class="fa-solid fa-circle-user"></i> Minha Área
+            </a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscrições</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas Anteriores</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html"><i class="fa-solid fa-circle-user"></i> Minha Área</a>
+    </div>
+</header>
+
+<section class="inner-hero">
+    <div class="container">
+        <div class="inner-hero-badge"><i class="fa-solid fa-shield-halved"></i> Privacidade</div>
+        <h1>Política de <span>Privacidade</span></h1>
+        <p>Saiba como coletamos, usamos e protegemos suas informações pessoais na plataforma L-Hub.</p>
+        <!-- ⬇️ EDITE: atualize a data da última revisão -->
+        <div class="update-badge"><i class="fa-solid fa-clock"></i> Última atualização: 18/02/2026</div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="policy-layout">
+        <!-- SIDEBAR -->
+        <aside class="policy-sidebar">
+            <h6>Conteúdo</h6>
+            <ul class="sidebar-nav">
+                <li><a href="#s1"><i class="fa-solid fa-circle-dot"></i> Dados coletados</a></li>
+                <li><a href="#s2"><i class="fa-solid fa-circle-dot"></i> Como usamos</a></li>
+                <li><a href="#s3"><i class="fa-solid fa-circle-dot"></i> Compartilhamento</a></li>
+                <li><a href="#s4"><i class="fa-solid fa-circle-dot"></i> Cookies</a></li>
+                <li><a href="#s5"><i class="fa-solid fa-circle-dot"></i> Segurança</a></li>
+                <li><a href="#s6"><i class="fa-solid fa-circle-dot"></i> Seus direitos (LGPD)</a></li>
+                <li><a href="#s7"><i class="fa-solid fa-circle-dot"></i> Retenção de dados</a></li>
+                <li><a href="#s8"><i class="fa-solid fa-circle-dot"></i> Alterações</a></li>
+                <li><a href="#s9"><i class="fa-solid fa-circle-dot"></i> Contato DPO</a></li>
+            </ul>
+        </aside>
+
+        <!-- CONTEÚDO -->
+        <div class="policy-content">
+
+            <section id="s1">
+                <h2><div class="section-icon"><i class="fa-solid fa-database"></i></div> Dados que coletamos</h2>
+                <p>Ao utilizar a plataforma L-Hub, podemos coletar as seguintes categorias de dados:</p>
+                <ul>
+                    <li><strong>Dados cadastrais:</strong> nome completo, e-mail, CPF, data de nascimento e telefone fornecidos no momento do cadastro ou inscrição.</li>
+                    <li><strong>Dados de uso:</strong> simulados realizados, respostas a questões, tempo de sessão e desempenho por disciplina.</li>
+                    <li><strong>Dados técnicos:</strong> endereço IP, tipo de navegador, sistema operacional e dispositivo utilizado.</li>
+                    <!-- ⬇️ EDITE: adicione outros dados que você coleta, se houver -->
+                </ul>
+                <div class="highlight-box">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <span>Não coletamos dados sensíveis como biometria, origem racial ou dados de saúde.</span>
+                </div>
+            </section>
+
+            <section id="s2">
+                <h2><div class="section-icon"><i class="fa-solid fa-gear"></i></div> Como utilizamos seus dados</h2>
+                <p>Utilizamos as informações coletadas para as seguintes finalidades:</p>
+                <ul>
+                    <li>Criar e gerenciar sua conta de usuário na plataforma.</li>
+                    <li>Processar inscrições em processos seletivos.</li>
+                    <li>Personalizar sua experiência de estudo com base no seu desempenho.</li>
+                    <li>Enviar comunicados sobre prazos, resultados e novidades da plataforma.</li>
+                    <li>Melhorar continuamente nossos serviços por meio de análise de uso.</li>
+                    <li>Cumprir obrigações legais e regulatórias aplicáveis.</li>
+                </ul>
+            </section>
+
+            <section id="s3">
+                <h2><div class="section-icon"><i class="fa-solid fa-share-nodes"></i></div> Compartilhamento de dados</h2>
+                <p>A L-Hub <strong>não vende</strong> seus dados pessoais. Podemos compartilhá-los apenas nas seguintes situações:</p>
+                <ul>
+                    <li><strong>Parceiros de infraestrutura:</strong> como provedores de hospedagem e banco de dados (ex: Firebase / Google Cloud), que processam dados sob contrato de confidencialidade.</li>
+                    <li><strong>Obrigações legais:</strong> quando exigido por lei, decisão judicial ou autoridade competente.</li>
+                    <!-- ⬇️ EDITE: adicione outros casos de compartilhamento, se houver -->
+                </ul>
+            </section>
+
+            <section id="s4">
+                <h2><div class="section-icon"><i class="fa-solid fa-cookie-bite"></i></div> Cookies e rastreamento</h2>
+                <p>Utilizamos cookies e tecnologias similares para:</p>
+                <ul>
+                    <li>Manter sua sessão ativa enquanto você navega na plataforma.</li>
+                    <li>Lembrar suas preferências e configurações.</li>
+                    <li>Analisar o tráfego e o comportamento de uso de forma agregada.</li>
+                </ul>
+                <p>Você pode configurar seu navegador para recusar cookies, mas isso pode afetar o funcionamento de algumas funcionalidades da plataforma.</p>
+            </section>
+
+            <section id="s5">
+                <h2><div class="section-icon"><i class="fa-solid fa-lock"></i></div> Segurança dos dados</h2>
+                <p>Adotamos medidas técnicas e organizacionais adequadas para proteger seus dados contra acesso não autorizado, perda ou divulgação indevida, incluindo:</p>
+                <ul>
+                    <li>Criptografia de dados em trânsito (HTTPS/TLS).</li>
+                    <li>Armazenamento seguro com controle de acesso por perfil.</li>
+                    <!-- ⬇️ EDITE: adicione outras medidas de segurança adotadas -->
+                    <li>Auditorias periódicas de segurança.</li>
+                </ul>
+            </section>
+
+            <section id="s6">
+                <h2><div class="section-icon"><i class="fa-solid fa-scale-balanced"></i></div> Seus direitos — LGPD</h2>
+                <p>Em conformidade com a <strong>Lei Geral de Proteção de Dados (Lei nº 13.709/2018)</strong>, você possui os seguintes direitos:</p>
+                <ul>
+                    <li>Confirmar a existência de tratamento de seus dados.</li>
+                    <li>Acessar seus dados pessoais armazenados.</li>
+                    <li>Corrigir dados incompletos, inexatos ou desatualizados.</li>
+                    <li>Solicitar a anonimização, bloqueio ou eliminação de dados desnecessários.</li>
+                    <li>Solicitar a portabilidade dos seus dados.</li>
+                    <li>Revogar o consentimento a qualquer momento.</li>
+                </ul>
+                <div class="highlight-box">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <!-- ⬇️ EDITE: coloque o e-mail do DPO ou canal de atendimento de privacidade -->
+                    <span>Para exercer seus direitos, entre em contato pelo e-mail: <strong>joaomenkdev@gmail.com</strong></span>
+                </div>
+            </section>
+
+            <section id="s7">
+                <h2><div class="section-icon"><i class="fa-solid fa-clock-rotate-left"></i></div> Retenção de dados</h2>
+                <!-- ⬇️ EDITE: ajuste os prazos de retenção conforme sua política -->
+                <p>Mantemos seus dados pelo tempo necessário para cumprir as finalidades descritas nesta política ou conforme exigido por lei. Após a exclusão da conta, seus dados serão eliminados em até <strong>[X dias/meses]</strong>, salvo obrigação legal de retenção.</p>
+            </section>
+
+            <section id="s8">
+                <h2><div class="section-icon"><i class="fa-solid fa-pen-to-square"></i></div> Alterações nesta política</h2>
+                <p>Podemos atualizar esta Política de Privacidade periodicamente. Quando isso ocorrer, você será notificado por e-mail ou por aviso na plataforma. A versão mais recente estará sempre disponível nesta página com a data de atualização indicada no topo.</p>
+            </section>
+
+            <div class="contact-policy" id="s9">
+                <h2 style="color:white;font-size:1.25rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;">
+                    <span style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-envelope"></i></span>
+                    Contato — DPO
+                </h2>
+                <p>Dúvidas ou solicitações relacionadas a dados pessoais? Fale com nosso responsável pela proteção de dados:</p>
+                <!-- ⬇️ EDITE: preencha com as informações reais do DPO -->
+                <p><strong style="color:white;">E-mail DPO:</strong> <a href="mailto:[EMAIL]">joaomenkdev@gmail.com</a></p>
+                <p><strong style="color:white;">Razão social:</strong> Learning Hub Inovation</p>
+                <p><strong style="color:white;">CNPJ:</strong></p>
+                <p><strong style="color:white;">Endereço:</strong> Angatuba-SP</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparação para processos seletivos.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html">Inscrições</a></li>
+                    <li><a href="noticias.html">Notícias</a></li>
+                    <li><a href="provas.html">Provas</a></li>
+                    <li><a href="simulados.html">Simulado</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Empresa</h5>
+                <ul class="footer-links">
+                    <li><a href="sobre.html">Sobre nós</a></li>
+                    <li><a href="privacidade.html">Política de Privacidade</a></li>
+                    <li><a href="termos.html">Termos de Uso</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item"><i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com</div>
+                <div class="contact-item"><i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050</div>
+                <div class="contact-item"><i class="fa-solid fa-location-dot contact-icon"></i> St Aurélio Moura, 138 — Angatuba, SP</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/java.js"></script>
+</body>
+</html>

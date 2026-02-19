@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulados - L-Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        /* ── SPACING VARS ── */
+        :root {
+            --spacing-sm: .75rem;
+            --spacing-md: 1.25rem;
+            --spacing-lg: 1.75rem;
+            --spacing-xl: 2.5rem;
+            --spacing-2xl: 4rem;
+            --radius: .625rem;
+        }
+
+        /* ── SELEÇÃO DE MATÉRIAS ── */
+        .materias-section {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+        .materias-section-header {
+            margin-bottom: 2rem;
+        }
+        .materias-section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: -.02em;
+        }
+        .materias-section-header p {
+            font-size: .9rem;
+            color: #6b7280;
+            margin-top: .25rem;
+        }
+        .materias-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+        }
+        .materia-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: border-color .2s, box-shadow .2s, transform .2s;
+            position: relative;
+        }
+        .materia-card:hover {
+            border-color: var(--card-color, var(--primary));
+            box-shadow: 0 4px 20px rgba(0,0,0,.08);
+            transform: translateY(-2px);
+        }
+        .materia-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .materia-icon {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: color-mix(in srgb, var(--card-color, var(--primary)) 12%, transparent);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--card-color, var(--primary));
+            font-size: 1.1rem;
+        }
+        .materia-badge {
+            font-size: .7rem;
+            font-weight: 600;
+            padding: .2rem .6rem;
+            border-radius: 4px;
+            letter-spacing: .03em;
+            text-transform: uppercase;
+        }
+        .badge-dificil { background: #fee2e2; color: #b91c1c; }
+        .badge-medio   { background: #fef3c7; color: #b45309; }
+        .badge-facil   { background: #d1fae5; color: #065f46; }
+        .materia-nome {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: .35rem;
+        }
+        .materia-meta {
+            font-size: .8rem;
+            color: #9ca3af;
+            margin-bottom: 1.25rem;
+        }
+        .btn-iniciar {
+            width: 100%;
+            padding: .65rem 1rem;
+            background: var(--primary-dark);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: .875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .18s;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: .01em;
+        }
+        .btn-iniciar:hover { background: var(--primary); }
+
+        /* ── SIMULADO ── */
+        .simulado-container { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+        .dash-card { background: #fff; border: 1px solid #e5e7eb; border-radius: var(--radius); padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
+        .btn-full { width: 100%; justify-content: center; }
+
+        /* Progress bar */
+        .progress-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .75rem; }
+        .progress-label { font-size: .85rem; font-weight: 600; color: var(--primary-dark); }
+        .progress-meta  { font-size: .8rem; color: #9ca3af; }
+        .progress-bar-wrap { background: #f3f4f6; border-radius: 2px; height: 3px; margin-bottom: 1.25rem; }
+        .progress-bar-fill { background: var(--primary); height: 3px; border-radius: 2px; transition: width .4s ease; }
+        .simulado-meta { display: flex; gap: 1.5rem; font-size: .85rem; color: #6b7280; }
+        .simulado-meta strong { color: var(--primary-dark); }
+
+        /* Questão */
+        .questao-card { background: #fff; border: 1px solid #e5e7eb; border-radius: var(--radius); padding: 1.5rem; margin-bottom: .875rem; }
+        .questao-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
+        .questao-numero { font-size: .75rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: .06em; }
+        .questao-dificuldade { font-size: .7rem; font-weight: 600; padding: .2rem .55rem; border-radius: 4px; text-transform: uppercase; letter-spacing: .04em; }
+        .questao-dificuldade.Fácil,  .questao-dificuldade.facil   { background: #d1fae5; color: #065f46; }
+        .questao-dificuldade.Médio,  .questao-dificuldade.medio   { background: #fef3c7; color: #b45309; }
+        .questao-dificuldade.Difícil,.questao-dificuldade.dificil  { background: #fee2e2; color: #b91c1c; }
+        .questao-fonte { font-size: .75rem; color: #c4c9d4; margin-bottom: 1rem; }
+        .questao-enunciado { font-size: .9625rem; color: #111827; line-height: 1.8; margin-bottom: 1.25rem; white-space: pre-line; }
+
+        /* Alternativas */
+        .alternativas { display: flex; flex-direction: column; gap: .5rem; }
+        .alternativa {
+            display: flex; align-items: flex-start; gap: .875rem;
+            padding: .75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: border-color .15s, background .15s;
+        }
+        .alternativa:hover { border-color: var(--primary); background: #f8fbff; }
+        .alternativa.selected { border-color: var(--primary); background: #eff6ff; }
+        .alternativa.correta  { border-color: #16a34a; background: #f0fdf4; pointer-events: none; }
+        .alternativa.errada   { border-color: #dc2626; background: #fef2f2; pointer-events: none; }
+        .alternativa.neutra   { opacity: .45; pointer-events: none; }
+        .alternativa-letra {
+            width: 28px; height: 28px; flex-shrink: 0;
+            border-radius: 4px;
+            background: #f3f4f6;
+            display: flex; align-items: center; justify-content: center;
+            font-size: .8rem; font-weight: 700;
+            color: #374151;
+        }
+        .alternativa.selected .alternativa-letra { background: var(--primary); color: white; }
+        .alternativa.correta  .alternativa-letra { background: #16a34a; color: white; }
+        .alternativa.errada   .alternativa-letra { background: #dc2626; color: white; }
+        .alternativa-texto { flex: 1; font-size: .9rem; line-height: 1.55; color: #374151; }
+
+        /* Finalizar button */
+        .btn-finalizar {
+            width: 100%; padding: .875rem;
+            background: var(--primary-dark);
+            color: white; border: none;
+            border-radius: 6px; font-size: .9rem;
+            font-weight: 600; cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: .5rem;
+            transition: background .18s;
+        }
+        .btn-finalizar:hover { background: #1e0e36; }
+
+        /* ── RESULTADO ── */
+        .resultado-container { max-width: 820px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+        .resultado-hero {
+            background: var(--primary-dark);
+            color: white;
+            border-radius: var(--radius);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .resultado-hero-label { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; opacity: .6; margin-bottom: .5rem; }
+        .resultado-nota { font-size: 5rem; font-weight: 800; line-height: 1; letter-spacing: -.04em; }
+        .resultado-nota-sub { font-size: .85rem; opacity: .55; margin-top: .35rem; }
+        .resultado-stats {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1px; background: rgba(255,255,255,.12);
+            border-radius: 8px; overflow: hidden;
+            margin-top: 2rem;
+        }
+        .stat-box { background: rgba(255,255,255,.07); padding: 1.25rem .75rem; text-align: center; }
+        .stat-box-val { font-size: 2rem; font-weight: 800; }
+        .stat-box-lbl { font-size: .75rem; opacity: .6; margin-top: .2rem; text-transform: uppercase; letter-spacing: .05em; }
+
+        /* Gabarito detalhado */
+        .detalhe-header-acerto { background: #f0fdf4; border-left: 3px solid #16a34a; }
+        .detalhe-header-erro   { background: #fef2f2; border-left: 3px solid #dc2626; }
+        .detalhe-header-badge  { padding: .875rem 1rem; border-radius: 6px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+        .detalhe-badge-label   { font-weight: 700; font-size: .9rem; color: #111827; }
+        .alternativa.errada-usuario { border-color: #fca5a5; background: #fff5f5; }
+        .alternativa.errada-usuario .alternativa-letra { background: #dc2626; color: white; }
+        .alt-tag { font-size: .65rem; font-weight: 700; padding: .15rem .5rem; border-radius: 3px; margin-left: .5rem; vertical-align: middle; text-transform: uppercase; letter-spacing: .04em; }
+        .tag-correta { background: #16a34a; color: white; }
+        .tag-sua     { background: #dc2626; color: white; }
+        .resumo-resposta { display: flex; gap: .75rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .resumo-box { flex: 1; min-width: 140px; padding: .75rem 1rem; border-radius: 6px; font-size: .875rem; font-weight: 600; }
+        .resumo-box-certa  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+        .resumo-box-errada { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+        .resumo-box-label  { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; opacity: .65; margin-bottom: .25rem; }
+
+        /* Loading */
+        .loading-overlay { position: fixed; inset: 0; background: rgba(15,10,25,.8); backdrop-filter: blur(6px); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; gap: .875rem; }
+        .loading-overlay p { color: rgba(255,255,255,.7); font-size: .9rem; font-weight: 500; letter-spacing: .02em; }
+        .spin { width: 36px; height: 36px; border: 2px solid rgba(255,255,255,.15); border-top-color: rgba(255,255,255,.85); border-radius: 50%; animation: spin .7s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Botões de ação no resultado */
+        .resultado-actions { display: flex; gap: .75rem; flex-wrap: wrap; padding: 1.25rem 1.5rem; }
+        .btn-action {
+            flex: 1; padding: .75rem 1.25rem;
+            border-radius: 6px; font-size: .875rem; font-weight: 600;
+            cursor: pointer; font-family: 'Inter', sans-serif;
+            border: 1px solid transparent; transition: all .18s;
+            display: flex; align-items: center; justify-content: center; gap: .4rem;
+            text-decoration: none;
+        }
+        .btn-action-primary { background: var(--primary-dark); color: white; }
+        .btn-action-primary:hover { background: #1e0e36; }
+        .btn-action-ghost { background: #f9fafb; color: #374151; border-color: #e5e7eb; }
+        .btn-action-ghost:hover { background: #f3f4f6; }
+
+        @media (max-width: 600px) {
+            .resultado-stats { grid-template-columns: 1fr 1fr; }
+            .resultado-nota  { font-size: 3.5rem; }
+            .materias-grid   { grid-template-columns: 1fr; }
+            .resultado-actions { flex-direction: column; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                Área do Candidato
+            </a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html">Início</a>
+        <a href="simulados.html">Simulados</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a>
+        <a href="area-candidato.html">Área do Candidato</a>
+    </div>
+</header>
+
+<section class="page-hero">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="index.html">Início</a>
+            <i class="fa-solid fa-chevron-right" style="font-size:.65rem;opacity:.5"></i>
+            <span>Simulados</span>
+        </div>
+        <h1>Banco de Simulados</h1>
+        <p>Questões reais de ENEM, FUVEST e UNICAMP — sorteadas aleatoriamente a cada sessão</p>
+    </div>
+</section>
+
+<!-- SELEÇÃO DE MATÉRIA -->
+<div id="selecaoMateria">
+    <div class="materias-section">
+        <div class="materias-section-header">
+            <h2>Selecione uma disciplina</h2>
+            <p>Cada simulado sorteia questões do banco oficial de forma aleatória</p>
+        </div>
+        <div class="materias-grid">
+            <div class="materia-card" style="--card-color:#3b82f6" onclick="iniciarSimulado('Matemática')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-square-root-variable"></i></div>
+                    <span class="materia-badge badge-dificil">Difícil</span>
+                </div>
+                <div class="materia-nome">Matemática</div>
+                <div class="materia-meta">45 questões &middot; 90 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+            <div class="materia-card" style="--card-color:#8b5cf6" onclick="iniciarSimulado('Português')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-language"></i></div>
+                    <span class="materia-badge badge-medio">Médio</span>
+                </div>
+                <div class="materia-nome">Português</div>
+                <div class="materia-meta">40 questões &middot; 80 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+            <div class="materia-card" style="--card-color:#06b6d4" onclick="iniciarSimulado('Física')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-atom"></i></div>
+                    <span class="materia-badge badge-dificil">Difícil</span>
+                </div>
+                <div class="materia-nome">Física</div>
+                <div class="materia-meta">35 questões &middot; 75 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+            <div class="materia-card" style="--card-color:#10b981" onclick="iniciarSimulado('Química')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-flask"></i></div>
+                    <span class="materia-badge badge-medio">Médio</span>
+                </div>
+                <div class="materia-nome">Química</div>
+                <div class="materia-meta">35 questões &middot; 75 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+            <div class="materia-card" style="--card-color:#22c55e" onclick="iniciarSimulado('Biologia')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-dna"></i></div>
+                    <span class="materia-badge badge-medio">Médio</span>
+                </div>
+                <div class="materia-nome">Biologia</div>
+                <div class="materia-meta">40 questões &middot; 70 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+            <div class="materia-card" style="--card-color:#f59e0b" onclick="iniciarSimulado('História')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-landmark"></i></div>
+                    <span class="materia-badge badge-facil">Fácil</span>
+                </div>
+                <div class="materia-nome">História</div>
+                <div class="materia-meta">30 questões &middot; 60 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+            <div class="materia-card" style="--card-color:#ef4444" onclick="iniciarSimulado('Geografia')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-earth-americas"></i></div>
+                    <span class="materia-badge badge-facil">Fácil</span>
+                </div>
+                <div class="materia-nome">Geografia</div>
+                <div class="materia-meta">30 questões &middot; 60 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+            <div class="materia-card" style="--card-color:#6366f1" onclick="iniciarSimulado('Inglês')">
+                <div class="materia-card-top">
+                    <div class="materia-icon"><i class="fa-solid fa-globe"></i></div>
+                    <span class="materia-badge badge-facil">Fácil</span>
+                </div>
+                <div class="materia-nome">Inglês</div>
+                <div class="materia-meta">25 questões &middot; 50 min</div>
+                <button class="btn-iniciar">Iniciar simulado</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SIMULADO EM ANDAMENTO -->
+<div class="simulado-container" id="simuladoAndamento" style="display:none">
+    <div class="dash-card">
+        <div class="progress-header">
+            <div>
+                <div class="progress-label" id="tituloSimulado">Simulado</div>
+            </div>
+            <div class="simulado-meta">
+                <span>Respondidas: <strong id="progressoQuestoes">0/0</strong></span>
+                <span>Tempo restante: <strong id="cronometro">00:00</strong></span>
+            </div>
+        </div>
+        <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+    </div>
+    <div id="questoesContainer"></div>
+    <div class="dash-card">
+        <button class="btn-finalizar" onclick="finalizarSimulado()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Finalizar e Ver Resultado
+        </button>
+    </div>
+</div>
+
+<!-- RESULTADO -->
+<div class="resultado-container" id="resultadoSimulado" style="display:none">
+    <div class="resultado-hero">
+        <div class="resultado-hero-label">Simulado concluído</div>
+        <div class="resultado-nota" id="notaFinal">0,0</div>
+        <div class="resultado-nota-sub">Nota final — escala de 0 a 10</div>
+        <div class="resultado-stats">
+            <div class="stat-box">
+                <div class="stat-box-val" id="totalAcertos">0</div>
+                <div class="stat-box-lbl">Acertos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-box-val" id="totalErros">0</div>
+                <div class="stat-box-lbl">Erros</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-box-val" id="tempoGasto">0</div>
+                <div class="stat-box-lbl">Minutos</div>
+            </div>
+        </div>
+    </div>
+    <div id="detalhesContainer"></div>
+    <div class="dash-card resultado-actions">
+        <button class="btn-action btn-action-primary" onclick="novoSimulado()">Novo simulado</button>
+        <a href="index.html" class="btn-action btn-action-ghost">Voltar ao início</a>
+    </div>
+</div>
+
+<div id="loadingOverlay" class="loading-overlay" style="display:none">
+    <div class="spin"></div>
+    <p>Sorteando questões...</p>
+</div>
+
+<script>
+// ============================================================
+//  BANCO DE QUESTÕES REAIS — ENEM / FUVEST / UNICAMP
+//  Fonte: provas oficiais 2022–2025
+// ============================================================
+const BANCO = {"Biologia":[{"id":54,"fonte":"ENEM","ano":2022,"caderno":"Dia 1 – CD1","numeroQuestao":91,"dificuldade":"Médio","enunciado":"Em um cruzamento entre duas plantas heterozigotas para a cor da flor (Cc × Cc), sendo C (cor) dominante sobre c (branco), qual é a proporção esperada de plantas de flor branca na F1?","altA":"0%","altB":"25%","altC":"50%","altD":"75%","altE":"100%","gabarito":"B"},{"id":53,"fonte":"ENEM","ano":2023,"caderno":"Dia 1 – CD1","numeroQuestao":91,"dificuldade":"Médio","enunciado":"A fotossíntese ocorre em duas etapas: a fase fotoquímica (reações da luz) e o Ciclo de Calvin (fase química). Na fase fotoquímica:","altA":"O CO₂ é fixado e reduzido para formar glicose","altB":"A energia luminosa é convertida em energia química (ATP e NADPH) e ocorre a fotólise da água","altC":"A glicose é oxidada para liberar energia","altD":"O O₂ é consumido e CO₂ é produzido","altE":"O amido é sintetizado a partir de glicose","gabarito":"B"},{"id":51,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":91,"dificuldade":"Médio","enunciado":"O HIV ataca os linfócitos T-CD4⁺, células fundamentais para a imunidade adaptativa. Pessoas com AIDS apresentam queda severa nessas células, tornando-se suscetíveis a infecções oportunistas. Isso ocorre porque os linfócitos T-CD4⁺ são essenciais para:","altA":"Produzir anticorpos diretamente","altB":"Realizar a fagocitose de patógenos","altC":"Coordenar a resposta imune, ativando linfócitos B, T citotóxicos e macrófagos","altD":"Produzir eritrócitos na medula óssea","altE":"Sintetizar proteínas do complemento no fígado","gabarito":"C"},{"id":52,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":92,"dificuldade":"Médio","enunciado":"A resistência bacteriana a antibióticos é um grave problema de saúde pública. Ela resulta de um processo evolutivo pelo qual:","altA":"As bactérias aprendem a reconhecer e evitar os antibióticos","altB":"Os antibióticos causam mutações dirigidas que conferem resistência às bactérias","altC":"Bactérias com mutações preexistentes que conferem resistência sobrevivem e se reproduzem mais, num processo de seleção natural","altD":"O uso de antibióticos cria novas espécies bacterianas mais resistentes por lamarckismo","altE":"As bactérias produzem anticorpos contra os antibióticos após exposição","gabarito":"C"},{"id":56,"fonte":"FUVEST","ano":2024,"caderno":"1ª Fase","numeroQuestao":10,"dificuldade":"Difícil","enunciado":"Na transcrição gênica, a fita molde do DNA é lida no sentido 3'→5' pela RNA polimerase, que sintetiza o mRNA no sentido:","altA":"3'→5'","altB":"5'→3'","altC":"Bidirecional","altD":"5'→5'","altE":"Depende do tipo de gene","gabarito":"B"},{"id":55,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":10,"dificuldade":"Difícil","enunciado":"A endossimbiose é a teoria que explica a origem de organelas eucarióticas como mitocôndrias e cloroplastos. Uma das evidências que sustenta essa teoria é:","altA":"O fato de mitocôndrias e cloroplastos possuírem DNA circular próprio e ribossomos do tipo 70S, semelhantes aos de procariontes","altB":"A presença de núcleo em mitocôndrias","altC":"O fato de o DNA mitocondrial ser idêntico ao DNA nuclear","altD":"A capacidade das mitocôndrias de realizar fotossíntese","altE":"A ausência de membrana lipídica nas mitocôndrias","gabarito":"A"},{"id":57,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":10,"dificuldade":"Difícil","enunciado":"Organismos C4 (como a cana-de-açúcar e o milho) são mais eficientes fotossinteticamente em climas quentes do que organismos C3 (como o trigo) porque:","altA":"Possuem cloroplastos maiores e em maior quantidade","altB":"Realizam a fotossíntese exclusivamente à noite para evitar perda de água","altC":"Possuem um mecanismo de concentração de CO₂ que reduz a fotorrespiração e aumenta a eficiência do Ciclo de Calvin","altD":"Não utilizam o Ciclo de Calvin, substituindo-o por um processo mais eficiente","altE":"Têm maior número de estômatos abertos mesmo sob alta temperatura e deficit hídrico","gabarito":"C"}],"Física":[{"id":38,"fonte":"ENEM","ano":2022,"caderno":"Dia 2 – CD1","numeroQuestao":121,"dificuldade":"Médio","enunciado":"Uma lâmpada de 100 W fica ligada durante 8 horas por dia. O consumo mensal (30 dias) em kWh é:","altA":"8 kWh","altB":"16 kWh","altC":"24 kWh","altD":"240 kWh","altE":"2,4 kWh","gabarito":"C"},{"id":36,"fonte":"ENEM","ano":2023,"caderno":"Dia 2 – CD1","numeroQuestao":121,"dificuldade":"Médio","enunciado":"Um painel solar de 1 m² recebe irradiância solar de 1 000 W/m² e tem eficiência de 20%. A potência elétrica gerada pelo painel é:","altA":"20 W","altB":"200 W","altC":"1 000 W","altD":"5 000 W","altE":"20 000 W","gabarito":"B"},{"id":37,"fonte":"ENEM","ano":2023,"caderno":"Dia 2 – CD1","numeroQuestao":122,"dificuldade":"Médio","enunciado":"Um carrinho de massa 500 g move-se com velocidade constante de 4 m/s. A energia cinética do carrinho é:","altA":"1,0 J","altB":"2,0 J","altC":"4,0 J","altD":"8,0 J","altE":"16,0 J","gabarito":"C"},{"id":33,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":121,"dificuldade":"Médio","enunciado":"Um equipamento de ultrassom médico emite ondas sonoras de frequência f = 3,0 MHz. A velocidade do som no tecido muscular é aproximadamente v = 1 500 m/s. O comprimento de onda das ondas ultrassônicas nesse tecido é:","altA":"0,5 mm","altB":"0,5 µm","altC":"5,0 × 10⁻⁴ m","altD":"5,0 mm","altE":"2,0 mm","gabarito":"C"},{"id":34,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":122,"dificuldade":"Médio","enunciado":"Um bloco de 2 kg está sobre uma superfície horizontal sem atrito. Uma força horizontal de 10 N é aplicada sobre ele por 5 s. A variação da quantidade de movimento do bloco nesse intervalo de tempo é:","altA":"2 kg·m/s","altB":"10 kg·m/s","altC":"25 kg·m/s","altD":"50 kg·m/s","altE":"100 kg·m/s","gabarito":"D"},{"id":35,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":123,"dificuldade":"Difícil","enunciado":"Uma central hidrelétrica tem uma queda d'água de 40 m e vazão de 500 m³/s. Considerando a densidade da água como 1 000 kg/m³ e g = 10 m/s², a potência máxima teórica disponível é:","altA":"2 × 10⁸ W","altB":"2 × 10⁷ W","altC":"5 × 10⁷ W","altD":"2 × 10⁹ W","altE":"5 × 10⁸ W","gabarito":"A"},{"id":40,"fonte":"FUVEST","ano":2024,"caderno":"1ª Fase","numeroQuestao":4,"dificuldade":"Difícil","enunciado":"Dois espelhos planos são posicionados em ângulo θ entre si. Uma fonte de luz puntiforme é colocada entre eles. O número de imagens formadas é dado por (360°/θ) − 1, quando 360°/θ é inteiro. Para θ = 45°, o número de imagens é:","altA":"6","altB":"7","altC":"8","altD":"9","altE":"5","gabarito":"B"},{"id":39,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":4,"dificuldade":"Difícil","enunciado":"Um fio retilíneo longo é percorrido por uma corrente elétrica i. A uma distância d do fio, o módulo do campo magnético é B₀. Se a corrente for dobrada e a distância reduzida à metade, o novo campo magnético será:","altA":"B₀","altB":"2B₀","altC":"4B₀","altD":"8B₀","altE":"B₀/4","gabarito":"C"},{"id":42,"fonte":"UNICAMP","ano":2024,"caderno":"1ª Fase – QY","numeroQuestao":5,"dificuldade":"Difícil","enunciado":"Um projétil é lançado horizontalmente a partir de uma altura de 20 m com velocidade de 10 m/s. Considerando g = 10 m/s² e desconsiderando o ar, o alcance horizontal até o chão é:","altA":"10 m","altB":"20 m","altC":"40 m","altD":"80 m","altE":"200 m","gabarito":"B"},{"id":41,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":5,"dificuldade":"Difícil","enunciado":"Um gás ideal sofre uma transformação isotérmica, tendo seu volume triplicado. Sabendo que a pressão inicial era P₀, a pressão final é:","altA":"3P₀","altB":"P₀/3","altC":"P₀/9","altD":"9P₀","altE":"P₀","gabarito":"B"}],"Geografia":[{"id":66,"fonte":"ENEM","ano":2022,"caderno":"Dia 1 – CD1","numeroQuestao":61,"dificuldade":"Médio","enunciado":"O agronegócio brasileiro destaca-se mundialmente como produtor e exportador de commodities. Entre os principais produtos do agronegócio brasileiro no cenário internacional, destacam-se:","altA":"Trigo, cevada e lúpulo","altB":"Soja, carne bovina, frango, açúcar e café","altC":"Arroz, feijão e mandioca, consumidos exclusivamente no mercado interno","altD":"Petróleo, minério de ferro e gás natural","altE":"Eletrônicos, automóveis e têxteis","gabarito":"B"},{"id":65,"fonte":"ENEM","ano":2023,"caderno":"Dia 1 – CD1","numeroQuestao":61,"dificuldade":"Médio","enunciado":"A urbanização brasileira se acelerou principalmente a partir da segunda metade do século XX. Um dos principais problemas gerados por esse processo foi:","altA":"O esvaziamento completo das áreas rurais brasileiras","altB":"O crescimento equilibrado e planejado das cidades","altC":"A formação de periferias urbanas precárias, favelização, déficit habitacional e sobrecarga nos serviços públicos, especialmente nas metrópoles","altD":"A descentralização industrial com desenvolvimento regional equilibrado","altE":"A redução da desigualdade social nas grandes metrópoles","gabarito":"C"},{"id":64,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":61,"dificuldade":"Fácil","enunciado":"O fenômeno El Niño é caracterizado pelo aquecimento anômalo das águas superficiais do Oceano Pacífico equatorial. No Brasil, esse fenômeno tipicamente causa:","altA":"Aumento das chuvas na região Sul e seca na região Nordeste","altB":"Seca na região Sul e aumento das chuvas na região Nordeste","altC":"Queda de temperatura uniforme em todo o país","altD":"Aumento das chuvas no Nordeste e no Norte simultaneamente","altE":"Não tem qualquer influência no clima brasileiro","gabarito":"A"},{"id":69,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":62,"dificuldade":"Médio","enunciado":"O conceito de 'desenvolvimento sustentável', consagrado no Relatório Brundtland (1987) e reafirmado nas conferências da ONU, define-se como:","altA":"O crescimento econômico ilimitado com uso intensivo de recursos naturais","altB":"O desenvolvimento que satisfaz as necessidades do presente sem comprometer a capacidade das gerações futuras de satisfazerem as suas próprias necessidades","altC":"A preservação total da natureza sem qualquer intervenção humana","altD":"O desenvolvimento exclusivamente tecnológico como solução para os problemas ambientais","altE":"O crescimento dos países pobres por meio da transferência de tecnologia dos países ricos","gabarito":"B"},{"id":67,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":20,"dificuldade":"Médio","enunciado":"O Semiárido brasileiro é uma região com características climáticas específicas. A principal causa da irregularidade das chuvas no Semiárido nordestino é:","altA":"A presença da Corrente Fria das Malvinas próximo ao litoral nordestino","altB":"A atuação da Massa de Ar Equatorial Continental que bloqueia as frentes frias","altC":"A posição geográfica, a atuação de sistemas atmosféricos como a ZCIT (Zona de Convergência Intertropical) e o bloqueio das chuvas pela Chapada Diamantina","altD":"O desmatamento do Cerrado que reduziu a evapotranspiração regional","altE":"A influência do Oceano Pacífico na formação das massas de ar que atingem o Nordeste","gabarito":"C"},{"id":68,"fonte":"UNICAMP","ano":2024,"caderno":"1ª Fase – QY","numeroQuestao":15,"dificuldade":"Médio","enunciado":"O conceito de globalização envolve a intensificação das relações econômicas, culturais e políticas entre diferentes partes do mundo. Um dos aspectos contraditórios da globalização é:","altA":"A homogeneização cultural completa, com desaparecimento de todas as identidades locais","altB":"A redução das desigualdades entre países desenvolvidos e em desenvolvimento","altC":"A coexistência de tendências de integração econômica mundial com o fortalecimento de identidades regionais, locais e movimentos antiglobalização","altD":"A eliminação das fronteiras nacionais e o fim dos Estados nacionais","altE":"O crescimento uniforme e equilibrado de todas as regiões do planeta","gabarito":"C"}],"História":[{"id":60,"fonte":"ENEM","ano":2022,"caderno":"Dia 1 – CD1","numeroQuestao":26,"dificuldade":"Médio","enunciado":"A Revolução Haitiana (1791-1804) é considerada um evento singular na história das Américas porque:","altA":"Foi a primeira independência do continente americano, liderada por colonos brancos","altB":"Foi a única revolução bem-sucedida de escravizados na história moderna, resultando na primeira república negra independente do mundo","altC":"Resultou da intervenção direta da Inglaterra para libertar os haitianos da França","altD":"Foi liderada por Napoleão Bonaparte como estratégia para expandir o império francês","altE":"Serviu de modelo direto para a independência do Brasil em 1822","gabarito":"B"},{"id":59,"fonte":"ENEM","ano":2023,"caderno":"Dia 1 – CD1","numeroQuestao":26,"dificuldade":"Médio","enunciado":"O Estado Novo (1937-1945) de Getúlio Vargas foi caracterizado pela:","altA":"Democracia representativa plena com eleições regulares","altB":"Centralização do poder, censura à imprensa, supressão dos partidos políticos e criação do DIP (Departamento de Imprensa e Propaganda) para controle da opinião pública","altC":"Abertura econômica ao capital estrangeiro sem restrições","altD":"Reforma agrária que redistribuiu terras a camponeses","altE":"Federalismo acentuado com grande autonomia estadual","gabarito":"B"},{"id":58,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":26,"dificuldade":"Fácil","enunciado":"O conceito de 'dupla consciência', desenvolvido pelo sociólogo W.E.B. Du Bois, refere-se à experiência dos afrodescendentes de se verem através dos olhos do mundo branco e de sua própria identidade cultural. No contexto brasileiro, essa noção pode ser relacionada ao debate sobre:","altA":"A mestiçagem como harmonia racial e ausência de conflito no Brasil","altB":"As tensões identitárias vivenciadas por populações negras num país marcado pelo racismo estrutural e pela ideologia do 'mito da democracia racial'","altC":"A integração pacífica entre culturas indígenas, africanas e europeias no período colonial","altD":"O processo de imigração europeia no século XIX e suas contribuições culturais","altE":"A formação do nacionalismo republicano no pós-Abolição","gabarito":"B"},{"id":62,"fonte":"FUVEST","ano":2024,"caderno":"1ª Fase","numeroQuestao":15,"dificuldade":"Médio","enunciado":"O processo de descolonização afro-asiática no pós-Segunda Guerra Mundial foi impulsionado por todos os fatores, EXCETO:","altA":"O enfraquecimento militar e econômico das potências coloniais europeias após a guerra","altB":"A pressão dos movimentos nacionalistas nas colônias","altC":"O apoio da ONU ao princípio da autodeterminação dos povos","altD":"O crescimento do pan-africanismo e do pan-arabismo como ideologias unificadoras","altE":"O incentivo direto da União Soviética e dos EUA ao fortalecimento dos impérios coloniais europeus","gabarito":"E"},{"id":61,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":15,"dificuldade":"Médio","enunciado":"O Sistema de Bretton Woods (1944) estabeleceu a ordem econômica internacional do pós-guerra. Uma de suas principais características foi:","altA":"A adoção do euro como moeda de reserva internacional","altB":"A criação do FMI e do Banco Mundial, e a vinculação do dólar americano ao ouro como padrão monetário internacional","altC":"A dissolução das fronteiras econômicas entre países capitalistas e socialistas","altD":"A criação da OTAN como braço econômico da defesa ocidental","altE":"A transferência da hegemonia econômica mundial dos EUA para a Europa","gabarito":"B"},{"id":63,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":15,"dificuldade":"Médio","enunciado":"A Conjuração Baiana de 1798 (Revolta dos Búzios) se diferenciou da Inconfidência Mineira de 1789 porque:","altA":"Ocorreu no mesmo período e teve os mesmos líderes","altB":"Tinha caráter mais popular e radical, com participação de escravizados, artesãos e soldados, e defendia a abolição da escravidão e a igualdade racial, além da independência","altC":"Foi liderada exclusivamente pela elite latifundiária baiana","altD":"Não teve influência das ideias iluministas e da Revolução Francesa","altE":"Conseguiu proclamar a independência da Bahia por alguns meses","gabarito":"B"}],"Inglês":[{"id":73,"fonte":"ENEM","ano":2022,"caderno":"Dia 1 – CD1","numeroQuestao":6,"dificuldade":"Fácil","enunciado":"The word 'although' connects two contrasting ideas. Which sentence uses 'although' CORRECTLY?","altA":"She went to the party although she was tired, so she danced all night.","altB":"Although it was raining, we decided to go for a walk.","altC":"He studied hard although he passed the test.","altD":"Although because she was sick, she went to the doctor.","altE":"We bought the car although we had too much money.","gabarito":"B"},{"id":72,"fonte":"ENEM","ano":2023,"caderno":"Dia 1 – CD1","numeroQuestao":6,"dificuldade":"Fácil","enunciado":"Read the text:\n\"Artificial intelligence is transforming many industries, from healthcare to transportation. While some experts celebrate these advances, others worry about job displacement and privacy concerns.\"\n\nWhat is the main idea of the text?","altA":"Artificial intelligence will replace all human jobs immediately","altB":"AI has only positive effects on society","altC":"AI is changing many sectors, bringing both opportunities and concerns","altD":"Healthcare is the only field being transformed by AI","altE":"Experts unanimously support the development of artificial intelligence","gabarito":"C"},{"id":77,"fonte":"ENEM","ano":2023,"caderno":"Dia 1 – CD1","numeroQuestao":7,"dificuldade":"Médio","enunciado":"Choose the sentence in the PASSIVE VOICE:","altA":"The students are studying for the exam.","altB":"She wrote a beautiful letter to her friend.","altC":"The new hospital was built by the government last year.","altD":"They have been working on this project for months.","altE":"He will finish the report tomorrow.","gabarito":"C"},{"id":70,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":6,"dificuldade":"Fácil","enunciado":"Read the following excerpt:\n\"Scientists have been warning about the effects of climate change for decades. Despite this, global carbon emissions continued to rise until the 2020s, when new international agreements forced countries to adopt cleaner energy sources.\"\n\nAccording to the text, what happened in the 2020s?","altA":"Scientists stopped warning about climate change","altB":"Global carbon emissions began to fall because of new international agreements requiring cleaner energy","altC":"Countries refused to sign any environmental agreements","altD":"New fossil fuel plants were built around the world","altE":"Climate change was completely solved by technology","gabarito":"B"},{"id":71,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":7,"dificuldade":"Fácil","enunciado":"Choose the sentence in the PAST PERFECT tense:","altA":"She is studying for the exam.","altB":"They will have finished by tomorrow.","altC":"He had already left when I arrived.","altD":"We are going to travel next week.","altE":"She studies every day.","gabarito":"C"},{"id":76,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":8,"dificuldade":"Fácil","enunciado":"Read the advertisement:\n\"Tired of paying too much for internet? Switch to SpeedNet and get the fastest connection at the lowest price. No contracts, no hidden fees. Try it free for 30 days!\"\n\nWhat is the purpose of this text?","altA":"To inform customers about internet service problems","altB":"To persuade consumers to change their internet provider by highlighting benefits","altC":"To warn people about the dangers of internet addiction","altD":"To describe the technical specifications of a broadband connection","altE":"To entertain readers with a story about technology","gabarito":"B"},{"id":74,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":25,"dificuldade":"Médio","enunciado":"Read the excerpt from George Orwell's '1984':\n\"War is Peace. Freedom is Slavery. Ignorance is Strength.\"\n\nThese slogans illustrate the concept of 'doublethink' because they:","altA":"Celebrate democratic values in a totalitarian state","altB":"Present logical and coherent political principles","altC":"Contradict themselves, forcing citizens to simultaneously accept mutually exclusive ideas as a form of psychological control","altD":"Describe the peaceful society that Orwell imagined for the future","altE":"Are written in an ironic style to make the reader laugh","gabarito":"C"},{"id":75,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":25,"dificuldade":"Médio","enunciado":"The expression 'to beat around the bush' means:","altA":"To work very hard in the countryside","altB":"To avoid saying directly what you mean, talking around the subject instead of addressing it","altC":"To hit something repeatedly with a stick","altD":"To explore a forest carefully","altE":"To be extremely focused on a single topic","gabarito":"B"}],"Matemática":[{"id":11,"fonte":"ENEM","ano":2022,"caderno":"Dia 2 – CD1","numeroQuestao":136,"dificuldade":"Médio","enunciado":"Um trabalhador recebe um salário fixo de R$ 1 800,00 mais comissão de 5% sobre o valor das vendas que realiza no mês. Em determinado mês, ele deseja receber um total de pelo menos R$ 2 700,00. O valor mínimo de vendas que ele precisa realizar é:","altA":"R$ 15 000,00","altB":"R$ 18 000,00","altC":"R$ 20 000,00","altD":"R$ 22 500,00","altE":"R$ 25 000,00","gabarito":"B"},{"id":12,"fonte":"ENEM","ano":2022,"caderno":"Dia 2 – CD1","numeroQuestao":137,"dificuldade":"Médio","enunciado":"Em um concurso de dança, a nota final de cada participante é calculada pela média ponderada das notas de três juízes, com pesos 1, 2 e 3, respectivamente. Uma candidata recebeu notas 7,0; 8,5 e 9,0 dos três juízes. Qual é a sua nota final?","altA":"8,0","altB":"8,25","altC":"8,5","altD":"8,583...","altE":"8,75","gabarito":"D"},{"id":8,"fonte":"ENEM","ano":2023,"caderno":"Dia 2 – CD1","numeroQuestao":136,"dificuldade":"Médio","enunciado":"Uma startup oferece dois planos de assinatura mensal para acesso a um aplicativo de streaming:\n• Plano A: taxa fixa de R$ 25,00 por mês;\n• Plano B: R$ 5,00 fixos + R$ 2,00 por hora de uso.\nPara que o Plano A seja mais vantajoso que o Plano B, quantas horas mínimas de uso por mês são necessárias?","altA":"8 horas","altB":"10 horas","altC":"11 horas","altD":"12 horas","altE":"15 horas","gabarito":"C"},{"id":9,"fonte":"ENEM","ano":2023,"caderno":"Dia 2 – CD1","numeroQuestao":137,"dificuldade":"Médio","enunciado":"Uma cooperativa de agricultores decidiu repartir entre seus membros o lucro obtido na safra. O lucro total foi de R$ 120 000,00, e foi dividido de forma proporcional ao número de hectares que cada produtor destinou à cooperativa. Os produtores A, B e C destinaram, respectivamente, 3, 5 e 4 hectares. Qual foi o valor recebido pelo produtor B?","altA":"R$ 30 000,00","altB":"R$ 40 000,00","altC":"R$ 50 000,00","altD":"R$ 60 000,00","altE":"R$ 36 000,00","gabarito":"C"},{"id":10,"fonte":"ENEM","ano":2023,"caderno":"Dia 2 – CD1","numeroQuestao":138,"dificuldade":"Difícil","enunciado":"Considere a sequência definida por a₁ = 1, a₂ = 1 e aₙ = aₙ₋₁ + aₙ₋₂ para n ≥ 3 (Sequência de Fibonacci). A razão entre termos consecutivos aₙ₊₁/aₙ se aproxima, conforme n cresce, de um número irracional φ (número de ouro). Com base nos termos a₆ = 8 e a₇ = 13, a aproximação de φ é:","altA":"φ ≈ 1,500","altB":"φ ≈ 1,600","altC":"φ ≈ 1,618","altD":"φ ≈ 1,625","altE":"φ ≈ 1,650","gabarito":"D"},{"id":1,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":136,"dificuldade":"Médio","enunciado":"Uma pesquisadora monitora a profundidade de um lago ao longo do ano. Ela observou que a profundidade P (em metros) pode ser modelada pela função P(t) = 4 + 3·sen(πt/6), onde t é o mês do ano (t=1 para janeiro, t=2 para fevereiro, …, t=12 para dezembro). De acordo com esse modelo, qual é a profundidade máxima do lago e em qual mês ela ocorre?","altA":"Profundidade máxima de 7 m, em março (t = 3)","altB":"Profundidade máxima de 7 m, em setembro (t = 9)","altC":"Profundidade máxima de 4 m, em junho (t = 6)","altD":"Profundidade máxima de 7 m, em junho (t = 6) e dezembro (t = 12)","altE":"Profundidade máxima de 1 m, em março (t = 3)","gabarito":"A"},{"id":2,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":137,"dificuldade":"Médio","enunciado":"Um fazendeiro deseja cercar uma área retangular usando um rio como um dos lados (não necessita de cerca nesse lado). Ele dispõe de 120 m de cerca. Qual deve ser a dimensão do retângulo para que a área cercada seja máxima?","altA":"Lados de 30 m e 60 m, área de 1 800 m²","altB":"Lados de 40 m e 40 m, área de 1 600 m²","altC":"Lados de 60 m e 60 m, área de 3 600 m²","altD":"Lados de 30 m e 30 m, área de 900 m²","altE":"Lados de 20 m e 80 m, área de 1 600 m²","gabarito":"A"},{"id":3,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":138,"dificuldade":"Médio","enunciado":"Na figura, estão representados os gráficos de duas funções f e g, ambas do 1º grau, que se intersectam no ponto P. Sabe-se que f(x) = 2x − 4 e que o ponto P tem coordenada y = 6. Qual é o valor do coeficiente angular de g?","altA":"−1","altB":"1","altC":"2","altD":"−2","altE":"3","gabarito":"B"},{"id":4,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":139,"dificuldade":"Difícil","enunciado":"Uma urna contém 5 bolas vermelhas e 3 bolas azuis. Dois jogadores, A e B, retiram bolas alternadamente, sem reposição, sendo A o primeiro a retirar. Ganha quem retirar a primeira bola azul. Qual é a probabilidade de A vencer o jogo?","altA":"3/8","altB":"15/28","altC":"5/14","altD":"1/2","altE":"3/14","gabarito":"B"},{"id":5,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":140,"dificuldade":"Médio","enunciado":"O gráfico a seguir representa o resultado de uma pesquisa sobre o tempo diário (em horas) que estudantes de um colégio dedicam às redes sociais. Os dados estão organizados em 4 grupos: menos de 1 h, entre 1 h e 2 h, entre 2 h e 3 h e mais de 3 h. As frequências relativas são, respectivamente, 20%, 35%, 30% e 15%. Se o colégio tem 400 alunos, quantos dedicam entre 1 h e 3 h às redes sociais?","altA":"140","altB":"220","altC":"260","altD":"340","altE":"280","gabarito":"C"},{"id":6,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":141,"dificuldade":"Médio","enunciado":"Em um triângulo retângulo, a hipotenusa mede 10 cm e um dos catetos mede 6 cm. A área desse triângulo, em cm², é:","altA":"24","altB":"30","altC":"40","altD":"48","altE":"60","gabarito":"A"},{"id":7,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":142,"dificuldade":"Médio","enunciado":"Uma empresa produz peças cilíndricas com raio de base r = 3 cm e altura h = 8 cm. Para embalagem, cada peça é colocada dentro de uma caixa cúbica de lado mínimo suficiente para caber a peça. Qual é o volume, em cm³, do espaço vazio entre a peça e a caixa? (Considere π ≈ 3.)","altA":"648 − 216 = 432 cm³","altB":"512 − 216 cm³ = 296 cm³","altC":"296 cm³","altD":"216 cm³","altE":"Não é possível calcular sem saber o π exato","gabarito":"B"},{"id":18,"fonte":"FUVEST","ano":2023,"caderno":"1ª Fase","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"Sejam A = {x ∈ ℤ | x² < 10} e B = {x ∈ ℤ | |x| ≤ 3}. O número de elementos de A ∪ B é:","altA":"5","altB":"6","altC":"7","altD":"8","altE":"9","gabarito":"C"},{"id":16,"fonte":"FUVEST","ano":2024,"caderno":"1ª Fase","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"O número de soluções inteiras da inequação |3x − 2| ≤ 7 é:","altA":"3","altB":"4","altC":"5","altD":"6","altE":"7","gabarito":"C"},{"id":17,"fonte":"FUVEST","ano":2024,"caderno":"1ª Fase","numeroQuestao":2,"dificuldade":"Difícil","enunciado":"A equação log₂(x + 1) + log₂(x − 1) = 3 tem solução:","altA":"x = 2","altB":"x = 3","altC":"x = √10","altD":"x = 4","altE":"Sem solução real","gabarito":"B"},{"id":13,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"Seja f : ℝ → ℝ definida por f(x) = x² − 4x + 3. O conjunto dos valores de x para os quais f(x) < 0 é o intervalo aberto:","altA":"(−∞, 1)","altB":"(1, 3)","altC":"(3, +∞)","altD":"(0, 4)","altE":"(−1, 3)","gabarito":"B"},{"id":14,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":2,"dificuldade":"Difícil","enunciado":"Uma progressão geométrica (PG) tem primeiro termo a₁ = 2 e razão q = 3. A soma dos cinco primeiros termos dessa PG é:","altA":"122","altB":"242","altC":"362","altD":"484","altE":"726","gabarito":"B"},{"id":15,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":3,"dificuldade":"Difícil","enunciado":"Em uma circunferência de raio 5, um ponto P é tal que a distância de P ao centro O é 13. Qual é o comprimento da tangente traçada de P à circunferência?","altA":"8","altB":"10","altC":"12","altD":"√194","altE":"√144 = 12","gabarito":"C"},{"id":21,"fonte":"UNICAMP","ano":2024,"caderno":"1ª Fase – QY","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"Uma loteria sorteia 5 números distintos entre 1 e 20. Qual é a probabilidade de um bilhete com 5 números distintos acertar todos os 5 sorteados?","altA":"1/15.504","altB":"1/20.000","altC":"1/10.000","altD":"5/20","altE":"1/15.504 = C(20,5)⁻¹","gabarito":"A"},{"id":19,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"Uma função f é definida por f(x) = ax² + bx + c, com a ≠ 0. Sabe-se que f(0) = 3, f(1) = 6 e f(−1) = 2. O valor de f(2) é:","altA":"9","altB":"11","altC":"13","altD":"15","altE":"17","gabarito":"C"},{"id":20,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":2,"dificuldade":"Difícil","enunciado":"Em uma prova de 10 questões, cada questão correta vale 1,0 ponto e cada errada desconta 0,25 ponto. Questões em branco não pontuam nem descontam. Um estudante respondeu todas as questões e obteve nota 6,25. Quantas questões ele acertou?","altA":"6","altB":"7","altC":"8","altD":"9","altE":"10","gabarito":"B"}],"Português":[{"id":29,"fonte":"ENEM","ano":2022,"caderno":"Dia 1 – CD1","numeroQuestao":1,"dificuldade":"Médio","enunciado":"Leia o trecho de Machado de Assis, de 'Dom Casmurro':\n\"Era natural que, havendo tantos e tão variados assuntos de conversação, não faltasse também o capítulo das confissões recíprocas.\"\n\nO narrador de 'Dom Casmurro' é caracterizado como:","altA":"Onisciente neutro, que narra os fatos com total imparcialidade","altB":"Narrador-personagem em 1ª pessoa, subjetivo e de confiabilidade questionável, pois é o próprio Bentinho adulto","altC":"Narrador em 3ª pessoa limitado ao ponto de vista de Capitu","altD":"Narrador épico, distanciado dos fatos históricos narrados","altE":"Narrador onisciente intruso com julgamentos morais explícitos","gabarito":"B"},{"id":27,"fonte":"ENEM","ano":2023,"caderno":"Dia 1 – CD1","numeroQuestao":1,"dificuldade":"Médio","enunciado":"Leia o poema de Carlos Drummond de Andrade:\n\"No meio do caminho tinha uma pedra / tinha uma pedra no meio do caminho / tinha uma pedra / no meio do caminho tinha uma pedra.\"\n\nA repetição dos versos no poema de Drummond tem como principal efeito estético:","altA":"Indicar cansaço do eu lírico com a repetição monótona do cotidiano","altB":"Criar uma musicalidade semelhante ao das cantigas medievais","altC":"Representar, por meio da insistência formal, a persistência de um obstáculo na vida do eu lírico","altD":"Demonstrar a pobreza do vocabulário modernista","altE":"Fazer referência à métrica clássica do Parnasianismo","gabarito":"C"},{"id":28,"fonte":"ENEM","ano":2023,"caderno":"Dia 1 – CD1","numeroQuestao":2,"dificuldade":"Médio","enunciado":"Um estudante escreveu em sua redação: 'Com vistas a melhoria da saúde pública, o governo deverão tomar providências.'\n\nIdentifique os dois desvios da norma-padrão presentes na frase:","altA":"Regência verbal inadequada em 'Com vistas a' e concordância verbal errada em 'deverão'","altB":"Uso indevido da crase em 'a melhoria' e concordância verbal errada em 'deverão'","altC":"Ortografia errada de 'providências' e regência nominal inadequada","altD":"Uso errado de 'com vistas a' e falta de artigo antes de 'saúde'","altE":"Ausência de crase em 'a melhoria' e uso errado do plural em 'providências'","gabarito":"B"},{"id":22,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":1,"dificuldade":"Médio","enunciado":"Leia o seguinte texto publicitário:\n\"Não adianta ter o celular mais moderno se você não tem o sinal mais rápido.\n Venha para a rede que nunca te deixa na mão.\"\n\nNesse texto, o recurso linguístico usado para convencer o leitor é:","altA":"A utilização de dados estatísticos como argumento de autoridade","altB":"A comparação implícita entre dois produtos concorrentes e o apelo à eficiência","altC":"O uso da ironia para criticar a tecnologia atual","altD":"A descrição detalhada das funcionalidades do serviço","altE":"A narração de uma experiência pessoal como prova empírica","gabarito":"B"},{"id":23,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":2,"dificuldade":"Médio","enunciado":"O texto literário a seguir é de Clarice Lispector:\n\"Ela não sabia que estava procurando. Procurando o quê? O modo como o vento vira a folha.\"\n\nO efeito de sentido produzido pela construção \"O modo como o vento vira a folha\" é:","altA":"A objetividade científica na descrição de fenômenos naturais","altB":"A busca existencial por algo indefinível e inefável, expresso por meio de uma imagem concreta","altC":"A crítica social ao comportamento alienado da personagem","altD":"A apresentação da natureza como entidade hostil","altE":"O relato jornalístico de um evento climático","gabarito":"B"},{"id":24,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":3,"dificuldade":"Médio","enunciado":"Em relação à norma-padrão da língua portuguesa, assinale a alternativa em que a concordância verbal está CORRETA:","altA":"Faz cinco anos que os moradores reclama das condições do bairro.","altB":"Houveram muitas reclamações durante a reunião de condomínio.","altC":"A maioria dos alunos foi aprovada nas provas finais.","altD":"Mais de um estudante foram aprovados na seleção.","altE":"Existiam no museu muita peça histórica valiosa.","gabarito":"C"},{"id":25,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":4,"dificuldade":"Médio","enunciado":"Leia a charge:\n[Dois personagens conversam. O primeiro diz: 'Preciso que você me ajude a resolver esse problema.' O segundo responde: 'Tudo bem, mas primeiro me explica: é um problema ou uma situação?']\n\nA charge critica o uso da linguagem eufemística no contexto:","altA":"Científico, onde a precisão terminológica é fundamental","altB":"Cotidiano, em que o uso de palavras mais suaves serve para evitar ou adiar conflitos","altC":"Literário, em que a metáfora substitui o termo técnico","altD":"Jurídico, em que eufemismos são proibidos por lei","altE":"Político, em que o discurso é sempre transparente","gabarito":"B"},{"id":26,"fonte":"ENEM","ano":2024,"caderno":"Dia 1 – CD1","numeroQuestao":5,"dificuldade":"Médio","enunciado":"O trecho a seguir é de Graciliano Ramos, em 'Vidas Secas':\n\"Fabiano andava para a frente, para o sul, sem direção certa, com esperança de que a caatinga terminasse.\"\n\nO movimento de Fabiano simboliza, no contexto do romance:","altA":"A fuga do personagem de uma perseguição policial","altB":"A busca pela sobrevivência diante da seca e da miséria, representando o drama do retirante nordestino","altC":"A aventura voluntária em direção ao desconhecido","altD":"O retorno à terra natal após anos de ausência","altE":"A migração por razões exclusivamente econômicas urbanas","gabarito":"B"},{"id":31,"fonte":"FUVEST","ano":2024,"caderno":"1ª Fase","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"O Naturalismo brasileiro do século XIX tem como característica central:","altA":"A valorização do sentimento e da subjetividade do eu lírico","altB":"O determinismo biológico e social, com personagens condicionadas pelo meio, pela raça e pelo momento histórico","altC":"A evasão para tempos medievais e espaços exóticos como fuga da realidade burguesa","altD":"A defesa do espiritualismo e da transcendência religiosa","altE":"A idealização da natureza e da mulher como símbolos nacionais","gabarito":"B"},{"id":30,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"Leia o trecho de Guimarães Rosa, de 'Grande Sertão: Veredas':\n\"O sertão é do tamanho do mundo.\"\n\nEssa afirmação condensa o que é central na obra porque:","altA":"Descreve com precisão geográfica a extensão do bioma Cerrado","altB":"Funciona como hipérbole irônica sobre a imaginação do narrador","altC":"Sugere que o sertão é espaço físico e, ao mesmo tempo, dimensão existencial e universal da condição humana","altD":"Revela a incapacidade de Riobaldo de distinguir real e imaginário","altE":"Afirma que o sertão é mais importante que qualquer outro lugar do Brasil","gabarito":"C"},{"id":32,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":1,"dificuldade":"Difícil","enunciado":"Considere o seguinte trecho argumentativo:\n\"O uso excessivo de redes sociais por adolescentes não é apenas um problema de saúde mental; é também uma questão de desigualdade, pois jovens de classes mais baixas têm menos acesso a alternativas de lazer e cultura que contrabalanciem os efeitos negativos.\"\n\nO argumento central do trecho é:","altA":"O uso de redes sociais causa apenas problemas de saúde mental","altB":"Jovens de baixa renda são os que mais usam redes sociais","altC":"O impacto das redes sociais é agravado pela desigualdade social, que restringe o acesso a alternativas culturais","altD":"As redes sociais devem ser proibidas para adolescentes","altE":"A desigualdade social é causada pelo uso de tecnologia","gabarito":"C"}],"Química":[{"id":46,"fonte":"ENEM","ano":2022,"caderno":"Dia 2 – CD1","numeroQuestao":106,"dificuldade":"Médio","enunciado":"O gráfico de solubilidade mostra que a solubilidade do KNO₃ aumenta com a temperatura. Uma solução saturada de KNO₃ a 80°C (contendo 170 g por 100 g de água) é resfriada a 20°C (solubilidade = 32 g por 100 g de água). A massa de KNO₃ que cristaliza é:","altA":"32 g","altB":"100 g","altC":"138 g","altD":"170 g","altE":"202 g","gabarito":"C"},{"id":45,"fonte":"ENEM","ano":2023,"caderno":"Dia 2 – CD1","numeroQuestao":106,"dificuldade":"Médio","enunciado":"Uma solução tampão é capaz de resistir a grandes variações de pH quando se adiciona pequena quantidade de ácido ou base. Uma mistura de CH₃COOH e CH₃COO⁻Na⁺ atua como tampão porque:\n","altA":"O ácido acético se ioniza completamente, neutralizando a base adicionada","altB":"O par ácido/base conjugada absorve prótons (H⁺) ou os libera, minimizando a variação de pH","altC":"O sódio metálico reage com a água liberando NaOH","altD":"A mistura tem pH = 7, que é o neutro ideal","altE":"Tamponar significa manter temperatura constante","gabarito":"B"},{"id":43,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":106,"dificuldade":"Médio","enunciado":"O etanol (C₂H₅OH) é usado como combustível em veículos. A equação balanceada da combustão completa do etanol é:\nC₂H₅OH + 3O₂ → 2CO₂ + 3H₂O\n\nSe forem queimados 46 g de etanol (massa molar = 46 g/mol), o volume de CO₂ produzido a 0°C e 1 atm (volume molar = 22,4 L/mol) é:","altA":"11,2 L","altB":"22,4 L","altC":"44,8 L","altD":"67,2 L","altE":"89,6 L","gabarito":"C"},{"id":44,"fonte":"ENEM","ano":2024,"caderno":"Dia 2 – CD1","numeroQuestao":107,"dificuldade":"Médio","enunciado":"O cloro (Cl₂) é amplamente utilizado no tratamento de água. Sua ação desinfetante ocorre porque o Cl₂ reage com a água formando ácido hipocloroso (HOCl), um agente oxidante. Essa propriedade do cloro está relacionada com o fato de que:","altA":"O cloro tem baixo número de oxidação nessa reação","altB":"O ácido hipocloroso é um redutor forte","altC":"O cloro tem alta eletronegatividade e tende a ganhar elétrons de compostos orgânicos dos microrganismos","altD":"O cloro forma ligação iônica com o hidrogênio da água","altE":"O cloro apresenta caráter metálico nessa reação","gabarito":"C"},{"id":48,"fonte":"FUVEST","ano":2024,"caderno":"1ª Fase","numeroQuestao":6,"dificuldade":"Difícil","enunciado":"O isômero do butano (C₄H₁₀) com cadeia ramificada é o isobutano (2-metilpropano). Qual propriedade física difere entre o butano e o isobutano?","altA":"Fórmula molecular","altB":"Ponto de ebulição, sendo o butano com ponto maior que o isobutano devido à maior área superficial","altC":"Número de carbonos na cadeia","altD":"Tipo de ligação química (C-H e C-C)","altE":"Fórmula estrutural plana","gabarito":"B"},{"id":47,"fonte":"FUVEST","ano":2025,"caderno":"1ª Fase – V1","numeroQuestao":6,"dificuldade":"Difícil","enunciado":"A reação de saponificação consiste na hidrólise básica de triglicerídeos (ésteres). Essa reação produz:","altA":"Ácidos carboxílicos e álcoois","altB":"Sais de ácidos graxos (sabão) e glicerol","altC":"Ésteres de baixa massa molar e água","altD":"Glicose e ácidos graxos","altE":"Polímeros e CO₂","gabarito":"B"},{"id":50,"fonte":"UNICAMP","ano":2024,"caderno":"1ª Fase – QY","numeroQuestao":6,"dificuldade":"Difícil","enunciado":"A constante de equilíbrio Kc para a reação H₂(g) + I₂(g) ⇌ 2HI(g) a 425°C é 55,3. Num recipiente com [H₂] = [I₂] = 0,1 mol/L, a reação está:","altA":"Em equilíbrio","altB":"Progredindo para a direita (formação de HI), pois Qc < Kc","altC":"Progredindo para a esquerda, pois Qc > Kc","altD":"Parada, pois as concentrações são iguais","altE":"Impossível de determinar sem saber a temperatura","gabarito":"B"},{"id":49,"fonte":"UNICAMP","ano":2025,"caderno":"1ª Fase – QZ","numeroQuestao":6,"dificuldade":"Difícil","enunciado":"Na eletrólise de uma solução aquosa de CuSO₄ com eletrodos de cobre, o que ocorre no ânodo (eletrodo positivo) é:","altA":"Deposição de cobre metálico","altB":"Liberação de oxigênio gasoso","altC":"Oxidação do cobre do eletrodo, que se dissolve na solução (Cu → Cu²⁺ + 2e⁻)","altD":"Redução do SO₄²⁻","altE":"Liberação de hidrogênio gasoso","gabarito":"C"}]};
+
+// Limites por matéria conforme os cards
+const CONFIG = {
+  'Matemática': { questoes: 45, tempo: 90 },
+  'Português':  { questoes: 40, tempo: 80 },
+  'Física':     { questoes: 35, tempo: 75 },
+  'Química':    { questoes: 35, tempo: 75 },
+  'Biologia':   { questoes: 40, tempo: 70 },
+  'História':   { questoes: 30, tempo: 60 },
+  'Geografia':  { questoes: 30, tempo: 60 },
+  'Inglês':     { questoes: 25, tempo: 50 },
+};
+
+let questoes        = [];
+let respostas       = {};
+let respondidas     = new Set();
+let inicioSimulado  = null;
+let cronometroTimer = null;
+let tempoLimite     = 90;
+
+// ── Embaralhar array ──────────────────────────────────────
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+// ── Iniciar simulado ──────────────────────────────────────
+function iniciarSimulado(materia) {
+    const banco    = BANCO[materia] || [];
+    const cfg      = CONFIG[materia] || { questoes: 10, tempo: 60 };
+    const total    = cfg.questoes;
+    tempoLimite    = cfg.tempo;
+
+    if (banco.length === 0) {
+        alert('⚠️ Ainda não há questões cadastradas para ' + materia + '.');
+        return;
+    }
+
+    document.getElementById('loadingOverlay').style.display = 'flex';
+
+    setTimeout(() => {
+        // Sortear aleatoriamente (com reposição se necessário)
+        let pool = shuffle(banco);
+        if (pool.length < total) {
+            // Repete o banco embaralhado até completar
+            while (pool.length < total) pool = pool.concat(shuffle(banco));
+        }
+        questoes   = pool.slice(0, total);
+        respostas  = {};
+        respondidas = new Set();
+        inicioSimulado = new Date();
+
+        renderQuestoes(materia);
+        document.getElementById('selecaoMateria').style.display   = 'none';
+        document.getElementById('simuladoAndamento').style.display = 'block';
+        document.getElementById('tituloSimulado').textContent = 'Simulado de ' + materia;
+        document.getElementById('loadingOverlay').style.display = 'none';
+        iniciarCronometro();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 400);
+}
+
+// ── Renderizar questões ───────────────────────────────────
+function renderQuestoes(materia) {
+    const container = document.getElementById('questoesContainer');
+    container.innerHTML = questoes.map((q, idx) => {
+        const alts = [
+            { l:'A', t: q.altA },
+            { l:'B', t: q.altB },
+            { l:'C', t: q.altC },
+            { l:'D', t: q.altD },
+            { l:'E', t: q.altE },
+        ].filter(a => a.t);
+
+        const caderno = q.caderno ? ` — ${q.caderno}` : '';
+        const numQ    = q.numeroQuestao ? ` Q.${q.numeroQuestao}` : '';
+
+        return `
+        <div class="questao-card" id="qcard-${idx}">
+            <div class="questao-header">
+                <span class="questao-numero">Questão ${idx+1} de ${questoes.length}</span>
+                <span class="questao-dificuldade ${q.dificuldade}">${q.dificuldade || 'Médio'}</span>
+            </div>
+            <div class="questao-fonte">📄 ${q.fonte} ${q.ano}${caderno}${numQ}</div>
+            <div class="questao-enunciado">${escapeHtml(q.enunciado)}</div>
+            <div class="alternativas" id="alts-${idx}">
+                ${alts.map(a => `
+                <div class="alternativa" id="alt-${idx}-${a.l}" onclick="selecionarAlternativa(${idx},'${a.l}')">
+                    <div class="alternativa-letra">${a.l}</div>
+                    <div class="alternativa-texto">${escapeHtml(a.t)}</div>
+                </div>`).join('')}
+            </div>
+        </div>`;
+    }).join('');
+    atualizarProgresso();
+}
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/\n/g,'<br>');
+}
+
+// ── Selecionar alternativa ────────────────────────────────
+function selecionarAlternativa(idx, letra) {
+    if (respondidas.has(idx)) return;
+    respostas[idx] = letra;
+    const container = document.getElementById('alts-' + idx);
+    container.querySelectorAll('.alternativa').forEach(el => el.classList.remove('selected'));
+    document.getElementById('alt-' + idx + '-' + letra).classList.add('selected');
+    atualizarProgresso();
+}
+
+// ── Progresso ─────────────────────────────────────────────
+function atualizarProgresso() {
+    const resp  = Object.keys(respostas).length;
+    const total = questoes.length;
+    document.getElementById('progressoQuestoes').textContent = resp + '/' + total;
+    document.getElementById('progressBar').style.width = ((resp / total) * 100) + '%';
+}
+
+// ── Cronômetro ────────────────────────────────────────────
+function iniciarCronometro() {
+    clearInterval(cronometroTimer);
+    cronometroTimer = setInterval(() => {
+        const diff  = Math.floor((new Date() - inicioSimulado) / 1000);
+        const limit = tempoLimite * 60;
+        const rest  = Math.max(0, limit - diff);
+        const m     = String(Math.floor(rest / 60)).padStart(2,'0');
+        const s     = String(rest % 60).padStart(2,'0');
+        const el    = document.getElementById('cronometro');
+        el.textContent = m + ':' + s;
+        el.style.color  = rest < 300 ? '#ef4444' : '';
+        if (rest === 0) { clearInterval(cronometroTimer); finalizarSimulado(true); }
+    }, 1000);
+}
+
+// ── Finalizar ─────────────────────────────────────────────
+function finalizarSimulado(automatico) {
+    const resp = Object.keys(respostas).length;
+    if (!automatico && resp < questoes.length) {
+        if (!confirm('Você respondeu ' + resp + ' de ' + questoes.length + ' questões.\nDeseja finalizar mesmo assim?')) return;
+    }
+    clearInterval(cronometroTimer);
+
+    let acertos = 0;
+    questoes.forEach((q, idx) => {
+        const correta = (q.gabarito || '').toUpperCase();
+        const usuario = (respostas[idx] || '').toUpperCase();
+        if (correta && usuario === correta) acertos++;
+    });
+
+    const erros   = questoes.length - acertos;
+    const nota    = questoes.length > 0 ? (acertos / questoes.length) * 10 : 0;
+    const minutos = Math.ceil((new Date() - inicioSimulado) / 60000);
+
+    document.getElementById('simuladoAndamento').style.display = 'none';
+    document.getElementById('resultadoSimulado').style.display = 'block';
+    document.getElementById('notaFinal').textContent    = nota.toFixed(1).replace('.',',');
+    document.getElementById('totalAcertos').textContent = acertos;
+    document.getElementById('totalErros').textContent   = erros;
+    document.getElementById('tempoGasto').textContent   = minutos;
+    renderDetalhes();
+    window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ── Gabarito detalhado com EXPLICAÇÕES IA ─────────────────
+function renderDetalhes() {
+    document.getElementById('detalhesContainer').innerHTML = questoes.map((q, idx) => {
+        const correta = (q.gabarito || '').toUpperCase();
+        const usuario = (respostas[idx] || '').toUpperCase();
+        const acertou = usuario === correta;
+        const semResposta = !usuario;
+        const alts    = [
+            { l:'A', t: q.altA }, { l:'B', t: q.altB }, { l:'C', t: q.altC },
+            { l:'D', t: q.altD }, { l:'E', t: q.altE },
+        ].filter(a => a.t);
+
+        const altCorreta  = alts.find(a => a.l === correta);
+        const altUsuario  = alts.find(a => a.l === usuario);
+
+        return `
+        <div class="questao-card" id="detalhe-${idx}">
+
+            <!-- Cabeçalho colorido de acerto/erro -->
+            <div class="detalhe-header-badge ${acertou ? 'detalhe-header-acerto' : 'detalhe-header-erro'}">
+                <div>
+                    <div class="detalhe-badge-label">${acertou ? '✅ Você acertou!' : semResposta ? '⏭️ Não respondida' : '❌ Você errou'}</div>
+                    <div style="font-size:.8rem;opacity:.75;margin-top:.2rem">Questão ${idx+1} de ${questoes.length} — ${q.fonte} ${q.ano}</div>
+                </div>
+                <span class="questao-dificuldade ${q.dificuldade}" style="flex-shrink:0">${q.dificuldade || 'Médio'}</span>
+            </div>
+
+            <!-- Enunciado -->
+            <div class="questao-enunciado" style="margin-bottom:1rem">${escapeHtml(q.enunciado)}</div>
+
+            <!-- Resumo rápido (só em caso de erro) -->
+            ${!acertou && !semResposta ? `
+            <div class="resumo-resposta">
+                <div class="resumo-box resumo-box-errada">
+                    <div class="resumo-box-label">Sua resposta</div>
+                    <div>${usuario}) ${escapeHtml(altUsuario ? altUsuario.t : '—')}</div>
+                </div>
+                <div class="resumo-box resumo-box-certa">
+                    <div class="resumo-box-label">Resposta correta</div>
+                    <div>${correta}) ${escapeHtml(altCorreta ? altCorreta.t : '—')}</div>
+                </div>
+            </div>` : ''}
+
+            <!-- Todas as alternativas -->
+            <div class="alternativas">
+                ${alts.map(a => {
+                    let cls = 'alternativa';
+                    let tag = '';
+                    if (a.l === correta && acertou) {
+                        cls += ' correta';
+                        tag = '<span class="alt-tag tag-correta">✓ Correta • Sua resposta</span>';
+                    } else if (a.l === correta) {
+                        cls += ' correta';
+                        tag = '<span class="alt-tag tag-correta">✓ Correta</span>';
+                    } else if (a.l === usuario && !acertou) {
+                        cls += ' errada-usuario';
+                        tag = '<span class="alt-tag tag-sua">✗ Sua resposta</span>';
+                    } else {
+                        cls += ' neutra';
+                    }
+                    return `
+                    <div class="${cls}">
+                        <div class="alternativa-letra">${a.l}</div>
+                        <div class="alternativa-texto">${escapeHtml(a.t)}${tag}</div>
+                    </div>`;
+                }).join('')}
+            </div>
+
+            <!-- Botão de explicação IA (só nos erros) -->
+            ${!acertou && !semResposta ? `
+            <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:2px solid #f3f4f6">
+                <button 
+                    onclick="gerarExplicacao(${idx})"
+                    id="btn-exp-${idx}"
+                    style="width:100%;padding:.875rem;background:linear-gradient(135deg,#3b82f6,#6366f1);color:white;border:none;border-radius:.75rem;font-weight:700;font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.6rem;transition:opacity .2s;box-shadow:0 4px 12px rgba(99,102,241,.3)">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"></path>
+                        <path d="M12 16v-4"></path><path d="M12 8h.01"></path>
+                    </svg>
+                    <span>💡 Entender por que errei — Explicação do GroqCloud</span>
+                </button>
+                <div id="explicacao-${idx}" style="display:none;margin-top:1rem;padding:1.25rem;background:linear-gradient(135deg,#eff6ff,#eef2ff);border-left:4px solid #6366f1;border-radius:.75rem"></div>
+            </div>
+            ` : acertou ? `
+            <div style="margin-top:1rem;padding:.75rem 1rem;background:#f0fdf4;border-radius:.75rem;font-size:.875rem;color:#15803d;font-weight:600;text-align:center">
+                🎉 Parabéns! Você acertou essa questão.
+            </div>` : ''}
+        </div>`;
+    }).join('');
+}
+
+// ── Gerar explicação com Claude AI ────────────────────────
+async function gerarExplicacao(idx) {
+    const btn = document.getElementById(`btn-exp-${idx}`);
+    const container = document.getElementById(`explicacao-${idx}`);
+    const q = questoes[idx];
+    
+    // Mostrar loading
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    btn.innerHTML = '<div class="spin" style="width:20px;height:20px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .8s linear infinite"></div><span>Gerando explicação...</span>';
+    
+    container.style.display = 'block';
+    container.innerHTML = '<p style="color:#6b7280;font-style:italic">✨ GroqCloud está analisando a questão...</p>';
+
+    try {
+        const prompt = `Você é um professor explicando por que a alternativa correta está certa em uma questão de vestibular.
+
+QUESTÃO:
+${q.enunciado}
+
+ALTERNATIVAS:
+A) ${q.altA}
+B) ${q.altB}
+C) ${q.altC}
+D) ${q.altD}
+E) ${q.altE}
+
+RESPOSTA CORRETA: ${q.gabarito}
+RESPOSTA DO ALUNO: ${respostas[idx]}
+
+Por favor, explique de forma clara e didática:
+1. Por que a alternativa ${q.gabarito} está correta
+2. O raciocínio necessário para chegar nessa resposta
+3. Por que a alternativa ${respostas[idx]} que o aluno escolheu estava incorreta
+
+Seja direto, use linguagem simples e foque no aprendizado. Máximo 200 palavras.`;
+
+        const response = await fetch("http://localhost:5000/api/ia/explicacao", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+
+        // Se servidor retornou erro com mensagem, usa ela
+        if (!response.ok) {
+            throw new Error(data.message || `Erro ${response.status} do servidor`);
+        }
+        
+        if (data.success && data.texto) {
+            const explicacao = data.texto;
+            container.innerHTML = `
+                <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.875rem">
+                    <div style="width:32px;height:32px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"></path><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+                    </div>
+                    <h4 style="font-size:.95rem;font-weight:800;color:#312e81;margin:0">💡 Explicação do GroqCloud</h4>
+                </div>
+                <div style="color:#1e3a8a;line-height:1.7;white-space:pre-wrap;font-size:.9rem">${explicacao}</div>
+                <div style="margin-top:.875rem;padding-top:.875rem;border-top:1px solid #c7d2fe;font-size:.75rem;color:#6366f1;font-style:italic">✨ Gerado pelo GroqCloud — GroqCloud AI</div>
+            `;
+            btn.style.display = 'none'; // Esconder botão após gerar
+        } else {
+            throw new Error('Resposta inválida da API');
+        }
+        
+    } catch (error) {
+        console.error('Erro ao gerar explicação:', error);
+        container.innerHTML = `
+            <p style="color:#dc2626;font-weight:600">⚠️ Erro ao gerar explicação. Tente novamente.</p>
+            <p style="color:#6b7280;font-size:0.875rem;margin-top:0.5rem">${error.message || 'Erro desconhecido'}</p>
+        `;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><span>Tentar Novamente</span>';
+    }
+}
+
+// ── Reiniciar ─────────────────────────────────────────────
+function novoSimulado() {
+    document.getElementById('resultadoSimulado').style.display = 'none';
+    document.getElementById('selecaoMateria').style.display    = 'block';
+    questoes = []; respostas = {}; respondidas = new Set();
+    clearInterval(cronometroTimer);
+    window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ── Menu mobile ───────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    if (typeof initCursor === 'function') initCursor();
+    const btn  = document.getElementById('menuBtn');
+    const menu = document.getElementById('mobileMenu');
+    const icon = document.getElementById('menuIcon');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('show');
+            icon.innerHTML = menu.classList.contains('show')
+                ? '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>'
+                : '<line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>';
+        });
+    }
+
+    // ── Auto-iniciar simulado via parâmetro de URL (?materia=Matemática) ──
+    const params  = new URLSearchParams(window.location.search);
+    const materia = params.get('materia');
+    if (materia && BANCO[materia]) {
+        // Pequeno delay para garantir que o DOM está pronto
+        setTimeout(() => iniciarSimulado(materia), 200);
+    }
+});
+</script>
+<script src="../js/java.js"></script>
+</body>
+</html>

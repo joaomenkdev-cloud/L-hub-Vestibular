@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Área — L-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        :root { --auth-bg: linear-gradient(135deg,#f0f4ff 0%,#faf5ff 50%,#f0fdf4 100%); }
+        body { background: var(--auth-bg); }
+
+        /* ─── AUTH SCREENS ─── */
+        .auth-page { min-height: calc(100vh - 80px); display:flex; align-items:center; justify-content:center; padding:7rem 1.25rem 4rem; }
+        .auth-card {
+            background:white; border-radius:28px;
+            box-shadow:0 20px 60px rgba(48,26,75,.12),0 4px 16px rgba(6,123,194,.08);
+            padding:3rem; width:100%; max-width:440px; position:relative; overflow:hidden;
+        }
+        .auth-card::before { content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--primary),#6366f1,#a855f7); }
+        .auth-brand { text-align:center; margin-bottom:.25rem; font-size:2rem; font-weight:800; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+        .auth-card h2 { text-align:center; font-size:1.25rem; color:var(--primary-dark); margin-bottom:.35rem; }
+        .auth-sub { text-align:center; color:#6b6080; font-size:.875rem; margin-bottom:2rem; }
+        .auth-alert { display:none; padding:.75rem 1rem; border-radius:10px; font-size:.85rem; margin-bottom:1rem; align-items:center; gap:.5rem; }
+        .auth-alert.error { background:#fef2f2; border:1px solid #fca5a5; color:#dc2626; display:flex; }
+        .auth-alert.info  { background:#eff6ff; border:1px solid #93c5fd; color:#1d4ed8; display:flex; }
+        .btn-google { width:100%; display:flex; align-items:center; justify-content:center; gap:.75rem; padding:.875rem 1.25rem; background:white; border:2px solid #e5e7eb; border-radius:14px; font-size:.95rem; font-weight:600; color:#374151; font-family:Inter,sans-serif; cursor:pointer !important; transition:all .2s; margin-bottom:1.5rem; }
+        .btn-google:hover { border-color:#d1d5db; background:#fafafa; box-shadow:0 4px 16px rgba(0,0,0,.08); transform:translateY(-1px); }
+        .btn-google img { width:20px; height:20px; }
+        .auth-divider { display:flex; align-items:center; gap:.875rem; color:#9ca3af; font-size:.8rem; margin-bottom:1.5rem; }
+        .auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background:#f0ebff; }
+        .form-grp { margin-bottom:1.1rem; }
+        .form-grp label { display:block; font-size:.825rem; font-weight:600; color:#374151; margin-bottom:.4rem; }
+        .input-wrap { position:relative; }
+        .input-wrap i.icon { position:absolute; left:.95rem; top:50%; transform:translateY(-50%); color:#9ca3af; font-size:.85rem; pointer-events:none; }
+        .input-wrap input { width:100%; padding:.875rem 1rem .875rem 2.6rem; border:1.5px solid #e5e7eb; border-radius:12px; font-size:.9rem; font-family:Inter,sans-serif; color:#111827; background:#f9fafb; transition:all .2s; box-sizing:border-box; }
+        .input-wrap input:focus { outline:none; border-color:var(--primary); background:white; box-shadow:0 0 0 3px rgba(6,123,194,.12); }
+        .toggle-pw { position:absolute; right:.875rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer !important; color:#9ca3af; padding:0; font-size:.85rem; }
+        .toggle-pw:hover { color:var(--primary); }
+        .btn-submit { width:100%; padding:1rem; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:white; border:none; border-radius:14px; font-size:1rem; font-weight:700; font-family:Inter,sans-serif; cursor:pointer !important; transition:all .25s; display:flex; align-items:center; justify-content:center; gap:.6rem; }
+        .btn-submit:hover { opacity:.9; transform:translateY(-1px); box-shadow:0 8px 28px rgba(6,123,194,.35); }
+        .btn-submit:disabled { opacity:.7; transform:none; }
+        .auth-footer-link { text-align:center; margin-top:1.25rem; font-size:.875rem; color:#6b6080; }
+        .auth-footer-link a { color:var(--primary); font-weight:600; text-decoration:none; }
+        .forgot-link { text-align:right; font-size:.8rem; margin-bottom:.25rem; }
+        .forgot-link a { color:var(--primary); text-decoration:none; font-weight:600; }
+
+        /* ─── OTP ─── */
+        .otp-inputs { display:flex; gap:.5rem; justify-content:center; margin:1rem 0; }
+        .otp-inputs input { width:48px; height:56px; text-align:center; font-size:1.4rem; font-weight:700; border:2px solid #e5e7eb; border-radius:10px; font-family:Inter,sans-serif; background:#f9fafb; color:var(--primary-dark); transition:.2s; box-sizing:border-box; }
+        .otp-inputs input:focus { outline:none; border-color:var(--primary); background:white; box-shadow:0 0 0 3px rgba(6,123,194,.12); }
+
+        /* ─── LOADING ─── */
+        #loadingOverlay { position:fixed; inset:0; background:rgba(255,255,255,.85); backdrop-filter:blur(4px); z-index:9999; display:none; align-items:center; justify-content:center; flex-direction:column; gap:1rem; }
+        #loadingOverlay.show { display:flex; }
+        .spinner { width:48px; height:48px; border:4px solid #f0ebff; border-top-color:var(--primary); border-radius:50%; animation:spin .8s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        /* ─── DASHBOARD ─── */
+        #dashboardArea { display:none; }
+        .dash-header { background:linear-gradient(135deg,#1e0c37,#301A4B 50%,#083d6b); padding:7rem 1.5rem 3rem; position:relative; overflow:hidden; }
+        .dash-header::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 60% 70% at 80% 50%,rgba(6,123,194,.2) 0%,transparent 65%); }
+        .dash-header .container { position:relative; z-index:1; }
+        .dash-welcome { color:rgba(255,255,255,.65); font-size:.875rem; font-weight:600; text-transform:uppercase; letter-spacing:.1em; margin-bottom:.5rem; }
+        .dash-name { color:white; font-size:clamp(1.75rem,3vw,2.5rem); font-weight:800; letter-spacing:-.02em; margin-bottom:1rem; }
+        .dash-badges { display:flex; gap:.75rem; flex-wrap:wrap; align-items:center; }
+        .dash-badge { padding:.4rem 1rem; border-radius:100px; font-size:.8rem; font-weight:700; display:inline-flex; align-items:center; gap:.4rem; }
+        .badge-email { background:rgba(255,255,255,.1); color:rgba(255,255,255,.8); border:1px solid rgba(255,255,255,.15); }
+        .badge-2fa-on  { background:rgba(34,197,94,.2); color:#86efac; border:1px solid rgba(34,197,94,.3); }
+        .badge-2fa-off { background:rgba(251,191,36,.15); color:#fde68a; border:1px solid rgba(251,191,36,.2); }
+        .btn-logout { background:rgba(255,255,255,.08); color:rgba(255,255,255,.8); border:1px solid rgba(255,255,255,.15); padding:.5rem 1.1rem; border-radius:10px; font-size:.82rem; font-weight:700; cursor:pointer !important; transition:.2s; font-family:Inter,sans-serif; display:inline-flex; align-items:center; gap:.4rem; }
+        .btn-logout:hover { background:rgba(239,68,68,.25); color:#fca5a5; border-color:rgba(239,68,68,.4); }
+        .dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:1.5rem; }
+        @media(max-width:640px){ .dash-grid{grid-template-columns:1fr;} }
+        .dash-section { background:linear-gradient(135deg,#f8f5ff,#eff6ff); padding:3rem 0; }
+        .dash-card { background:white; border-radius:20px; padding:1.75rem; box-shadow:0 2px 16px rgba(48,26,75,.06); border:1px solid rgba(48,26,75,.06); transition:all .3s; }
+        .dash-card:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(48,26,75,.12); }
+        .dash-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; }
+        .dash-card-title { font-weight:700; color:var(--primary-dark); font-size:1rem; display:flex; align-items:center; gap:.6rem; }
+        .dash-card-title i { color:var(--primary); }
+        .dash-card-full { grid-column:1/-1; }
+        .info-row { display:flex; justify-content:space-between; align-items:center; padding:.625rem 0; border-bottom:1px solid #f3f0f8; font-size:.875rem; }
+        .info-row:last-child { border-bottom:none; }
+        .info-label { color:#6b6080; }
+        .info-value { font-weight:600; color:var(--primary-dark); }
+        .status-chip { padding:.3rem .85rem; border-radius:100px; font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+        .chip-ok { background:#dcfce7; color:#15803d; }
+        .chip-warn { background:#fef9c3; color:#a16207; }
+        .chip-pending { background:#f3f0f8; color:#7c3aed; }
+        .countdown-mini { display:grid; grid-template-columns:repeat(4,1fr); gap:.6rem; margin-top:.75rem; }
+        .cm-item { background:linear-gradient(135deg,var(--primary-dark),var(--primary)); border-radius:10px; padding:.75rem .5rem; text-align:center; }
+        .cm-val { font-size:1.35rem; font-weight:800; color:white; font-variant-numeric:tabular-nums; }
+        .cm-lbl { font-size:.65rem; color:rgba(255,255,255,.6); text-transform:uppercase; letter-spacing:.06em; margin-top:.1rem; }
+        .news-mini { display:flex; flex-direction:column; gap:.75rem; }
+        .news-mini-item { display:flex; gap:.75rem; align-items:flex-start; padding:.75rem; border-radius:10px; background:#f8f5ff; transition:background .2s; }
+        .news-mini-item:hover { background:#f0ebff; }
+        .news-mini-dot { width:8px; height:8px; border-radius:50%; background:var(--primary); margin-top:.35rem; flex-shrink:0; }
+        .news-mini-title { font-size:.875rem; font-weight:600; color:var(--primary-dark); margin-bottom:.2rem; }
+        .news-mini-date { font-size:.75rem; color:#9ca3af; }
+        .senha-form { display:flex; flex-direction:column; gap:1rem; }
+        .senha-form .si { position:relative; }
+        .senha-form .si i { position:absolute; left:.9rem; top:50%; transform:translateY(-50%); color:#9ca3af; font-size:.85rem; pointer-events:none; }
+        .senha-form input { width:100%; padding:.75rem 1rem .75rem 2.5rem; border:1.5px solid #e5e7eb; border-radius:10px; font-family:Inter,sans-serif; font-size:.9rem; background:#f9fafb; box-sizing:border-box; transition:.2s; }
+        .senha-form input:focus { outline:none; border-color:var(--primary); background:white; }
+        .btn-save { padding:.75rem 1.5rem; background:linear-gradient(135deg,var(--primary),var(--primary-dark)); color:white; border:none; border-radius:10px; font-family:Inter,sans-serif; font-size:.875rem; font-weight:700; cursor:pointer !important; transition:.2s; display:inline-flex; align-items:center; gap:.4rem; }
+        .btn-save:hover { opacity:.9; transform:translateY(-1px); }
+        .avatar { width:52px; height:52px; border-radius:50%; object-fit:cover; border:3px solid rgba(255,255,255,.2); }
+        .avatar-placeholder { width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg,var(--primary),#6366f1); display:inline-flex; align-items:center; justify-content:center; color:white; font-weight:800; font-size:1.1rem; border:3px solid rgba(255,255,255,.2); }
+
+        /* ─── TOAST ─── */
+        .toast { position:fixed; bottom:2rem; right:2rem; padding:.875rem 1.25rem; border-radius:14px; font-size:.875rem; font-weight:600; z-index:9999; transform:translateY(80px); opacity:0; transition:all .35s cubic-bezier(.4,0,.2,1); display:flex; align-items:center; gap:.6rem; box-shadow:0 8px 32px rgba(0,0,0,.25); color:white; }
+        .toast.show { transform:translateY(0); opacity:1; }
+        .toast.success { background:linear-gradient(135deg,#15803d,#22c55e); }
+        .toast.error   { background:linear-gradient(135deg,#b91c1c,#ef4444); }
+        .toast.info    { background:linear-gradient(135deg,var(--primary-dark),var(--primary)); }
+
+        @media(max-width:520px){ .auth-card{ padding:2rem 1.5rem; } }
+    </style>
+</head>
+<body>
+<div id="cursor"></div><div id="cursor-ring"></div>
+<div class="toast" id="toast"></div>
+<div id="loadingOverlay"><div class="spinner"></div><p style="color:#6b6080;font-weight:600">Aguarde...</p></div>
+
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary active"><i class="fa-solid fa-circle-user"></i> Minha Área</a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscrições</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html"><i class="fa-solid fa-circle-user"></i> Minha Área</a>
+    </div>
+</header>
+
+<!-- ═══════════════ TELA DE LOGIN ═══════════════ -->
+<div id="loginArea">
+    <div class="auth-page">
+        <div class="auth-card">
+            <div id="loginScreen">
+                <div class="auth-brand">L-Hub</div>
+                <h2>Bem-vindo de volta</h2>
+                <p class="auth-sub">Entre na sua conta para continuar</p>
+                <div class="auth-alert" id="loginAlert"></div>
+
+                <button class="btn-google" onclick="loginGoogle()">
+                    <img src="https://www.google.com/favicon.ico" alt="Google">
+                    Continuar com Google
+                </button>
+                <div class="auth-divider">ou entre com e-mail</div>
+
+                <div class="form-grp">
+                    <label for="loginEmail">E-mail</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-envelope icon"></i>
+                        <input type="email" id="loginEmail" placeholder="joao@email.com" autocomplete="email">
+                    </div>
+                </div>
+                <div class="form-grp">
+                    <div class="forgot-link"><a href="#" onclick="mostrarReset(); return false;">Esqueci a senha</a></div>
+                    <label for="loginSenha">Senha</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-lock icon"></i>
+                        <input type="password" id="loginSenha" placeholder="Sua senha" autocomplete="current-password">
+                        <button type="button" class="toggle-pw" onclick="togglePw('loginSenha','iconLoginSenha')"><i id="iconLoginSenha" class="fa-solid fa-eye"></i></button>
+                    </div>
+                </div>
+
+                <button class="btn-submit" id="btnLogin" onclick="fazerLogin()">
+                    <i class="fa-solid fa-right-to-bracket"></i> Entrar
+                </button>
+                <p class="auth-footer-link">Não tem conta? <a href="inscricao.html">Criar conta grátis</a></p>
+            </div>
+
+            <!-- ── 2FA CHALLENGE ── -->
+            <div id="twoFAChallenge" style="display:none">
+                <div class="auth-brand">L-Hub</div>
+                <h2>Verificação em 2 etapas</h2>
+                <p class="auth-sub">Abra seu app autenticador e insira o código de 6 dígitos</p>
+                <div class="auth-alert" id="twoFAChallengeAlert"></div>
+                <div class="otp-inputs" id="otpChallenge">
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                    <input type="text" maxlength="1" inputmode="numeric" pattern="[0-9]">
+                </div>
+                <button class="btn-submit" id="btnVerify2FA" onclick="verificarDesafio2FA()">
+                    <i class="fa-solid fa-shield-check"></i> Verificar
+                </button>
+            </div>
+
+            <!-- ── RESET SENHA ── -->
+            <div id="resetScreen" style="display:none">
+                <div class="auth-brand">L-Hub</div>
+                <h2>Redefinir senha</h2>
+                <p class="auth-sub">Enviaremos um link para o seu e-mail</p>
+                <div class="auth-alert" id="resetAlert"></div>
+                <div class="form-grp">
+                    <label for="resetEmail">E-mail da conta</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-envelope icon"></i>
+                        <input type="email" id="resetEmail" placeholder="joao@email.com">
+                    </div>
+                </div>
+                <button class="btn-submit" onclick="enviarReset()">
+                    <i class="fa-solid fa-paper-plane"></i> Enviar link de redefinição
+                </button>
+                <p class="auth-footer-link"><a href="#" onclick="mostrarLogin(); return false;">← Voltar ao login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ DASHBOARD ═══════════════ -->
+<div id="dashboardArea">
+    <div class="dash-header">
+        <div class="container">
+            <div style="display:flex;align-items:flex-start;gap:1rem;flex-wrap:wrap">
+                <div id="dashAvatar"></div>
+                <div style="flex:1">
+                    <div class="dash-welcome"><i class="fa-solid fa-wave-square"></i> Bem-vindo de volta</div>
+                    <div class="dash-name" id="dashNome">—</div>
+                    <div class="dash-badges">
+                        <span class="dash-badge badge-email" id="dashEmail">—</span>
+                        <span class="dash-badge" id="dash2FABadge">—</span>
+                        <button class="btn-logout" onclick="fazerLogout()"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="dash-section">
+        <div class="container">
+            <div class="dash-grid">
+
+                <!-- Perfil -->
+                <div class="dash-card animate-on-scroll">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title"><i class="fa-solid fa-id-card"></i> Meus Dados</div>
+                    </div>
+                    <div class="info-row"><span class="info-label">Nome</span><span class="info-value" id="infoNome">—</span></div>
+                    <div class="info-row"><span class="info-label">E-mail</span><span class="info-value" id="infoEmail">—</span></div>
+                    <div class="info-row"><span class="info-label">Conta criada</span><span class="info-value" id="infoData">—</span></div>
+                    <div class="info-row"><span class="info-label">Login via</span><span class="info-value" id="infoProvider">—</span></div>
+                    <div class="info-row"><span class="info-label">2FA</span><span class="status-chip" id="info2FA">—</span></div>
+                </div>
+
+                <!-- Contagem regressiva -->
+                <div class="dash-card animate-on-scroll delay-1">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title"><i class="fa-solid fa-hourglass-half"></i> Contagem regressiva</div>
+                    </div>
+                    <p style="font-size:.82rem;color:#6b6080;margin-bottom:.75rem">Tempo até a prova — 15/06/2026</p>
+                    <div class="countdown-mini">
+                        <div class="cm-item"><div class="cm-val" id="cdDias">--</div><div class="cm-lbl">Dias</div></div>
+                        <div class="cm-item"><div class="cm-val" id="cdHoras">--</div><div class="cm-lbl">Horas</div></div>
+                        <div class="cm-item"><div class="cm-val" id="cdMin">--</div><div class="cm-lbl">Min</div></div>
+                        <div class="cm-item"><div class="cm-val" id="cdSeg">--</div><div class="cm-lbl">Seg</div></div>
+                    </div>
+                </div>
+
+                <!-- Comunicados -->
+                <div class="dash-card animate-on-scroll">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title"><i class="fa-solid fa-bell"></i> Comunicados</div>
+                        <a href="noticias.html" style="font-size:.78rem;color:var(--primary);font-weight:600;text-decoration:none">Ver todos →</a>
+                    </div>
+                    <div class="news-mini">
+                        <div class="news-mini-item"><div class="news-mini-dot"></div><div><div class="news-mini-title">Edital ENEM 2025 publicado</div><div class="news-mini-date">10 fev 2026</div></div></div>
+                        <div class="news-mini-item"><div class="news-mini-dot"></div><div><div class="news-mini-title">Inscrições FUVEST 2026 abertas</div><div class="news-mini-date">05 fev 2026</div></div></div>
+                        <div class="news-mini-item"><div class="news-mini-dot"></div><div><div class="news-mini-title">Novos simulados de IA disponíveis</div><div class="news-mini-date">08 fev 2026</div></div></div>
+                    </div>
+                </div>
+
+                <!-- Local de prova -->
+                <div class="dash-card animate-on-scroll delay-1">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title"><i class="fa-solid fa-location-dot"></i> Local de Prova</div>
+                    </div>
+                    <div style="text-align:center;padding:1rem 0;color:#9ca3af">
+                        <i class="fa-solid fa-clock" style="font-size:1.5rem;margin-bottom:.5rem;display:block"></i>
+                        <p style="font-size:.875rem">Locais divulgados em <strong>20/05/2026</strong></p>
+                    </div>
+                </div>
+
+                <!-- Segurança -->
+                <div class="dash-card animate-on-scroll">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title"><i class="fa-solid fa-shield-halved"></i> Segurança</div>
+                    </div>
+                    <div class="senha-form">
+                        <div class="si"><i class="fa-solid fa-lock"></i><input type="password" id="senhaNova" placeholder="Nova senha (mín. 8 caracteres)"></div>
+                        <div class="si"><i class="fa-solid fa-lock"></i><input type="password" id="senhaConf" placeholder="Confirmar nova senha"></div>
+                        <button class="btn-save" onclick="trocarSenha()"><i class="fa-solid fa-key"></i> Salvar nova senha</button>
+                    </div>
+                    <div style="margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid #f3f0f8">
+                        <div style="display:flex;align-items:center;justify-content:space-between">
+                            <div>
+                                <div style="font-size:.875rem;font-weight:700;color:var(--primary-dark)">Verificação em 2 etapas</div>
+                                <div style="font-size:.78rem;color:#6b6080;margin-top:.2rem" id="label2FA">Proteja sua conta</div>
+                            </div>
+                            <button class="btn-save" id="btn2FAToggle" onclick="gerenciar2FA()" style="padding:.6rem 1rem;font-size:.8rem">
+                                <i class="fa-solid fa-shield-plus"></i> Ativar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ações rápidas -->
+                <div class="dash-card animate-on-scroll delay-1">
+                    <div class="dash-card-header">
+                        <div class="dash-card-title"><i class="fa-solid fa-bolt"></i> Ações rápidas</div>
+                    </div>
+                    <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+                        <a href="simulados.html" class="btn btn-primary" style="text-decoration:none"><i class="fa-solid fa-brain"></i> Simulado</a>
+                        <a href="provas.html" class="btn" style="background:#f3f0f8;color:var(--primary-dark);text-decoration:none"><i class="fa-solid fa-scroll"></i> Provas</a>
+                        <a href="cronograma.html" class="btn" style="background:#f3f0f8;color:var(--primary-dark);text-decoration:none"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+                        <a href="noticias.html" class="btn" style="background:#f3f0f8;color:var(--primary-dark);text-decoration:none"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- ── MODAL 2FA SETUP (no dashboard) ── -->
+<div id="modal2FA" style="display:none;position:fixed;inset:0;z-index:9998;align-items:center;justify-content:center;padding:1rem">
+    <div onclick="fecharModal2FA()" style="position:absolute;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px)"></div>
+    <div style="position:relative;background:white;border-radius:24px;padding:2.5rem;max-width:440px;width:100%;z-index:1;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+        <h3 style="font-size:1.2rem;color:var(--primary-dark);margin-bottom:.5rem"><i class="fa-solid fa-shield-halved" style="color:var(--primary);margin-right:.4rem"></i>Ativar 2FA</h3>
+        <p style="font-size:.85rem;color:#6b6080;margin-bottom:1.25rem">Escaneie o QR Code com seu app autenticador (Google Authenticator, Authy, etc.)</p>
+        <div id="modal2FAqr" style="display:flex;justify-content:center;margin:1rem 0"></div>
+        <p style="font-size:.75rem;color:#9ca3af;text-align:center;margin-bottom:.35rem">Chave manual:</p>
+        <div id="modal2FAkey" style="font-family:monospace;font-size:.8rem;background:#f8f5ff;padding:.5rem 1rem;border-radius:8px;text-align:center;word-break:break-all;color:var(--primary-dark);border:1px solid #e9d5ff;margin-bottom:1.25rem">—</div>
+        <p style="font-size:.85rem;font-weight:600;color:#374151;text-align:center;margin-bottom:.5rem">Código do app:</p>
+        <div class="otp-inputs" id="otpModal">
+            <input type="text" maxlength="1" inputmode="numeric"><input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric"><input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric"><input type="text" maxlength="1" inputmode="numeric">
+        </div>
+        <div class="auth-alert" id="modal2FAAlert" style="margin-top:.75rem"></div>
+        <button class="btn-submit" style="margin-top:1rem" onclick="confirmarModal2FA()"><i class="fa-solid fa-shield-check"></i> Confirmar ativação</button>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparação para processos seletivos.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+                    <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+                    <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+                    <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+                    <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+                    <li><a href="area-candidato.html"><i class="fa-solid fa-circle-user" style="opacity:.6;font-size:.8em"></i> Minha Área</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item"><i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com</div>
+                <div class="contact-item"><i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { auth, db } from '../js/firebase-config.js';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider, signOut, multiFactor, TotpMultiFactorGenerator, getMultiFactorResolver } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+const googleProvider = new GoogleAuthProvider();
+
+let currentUser = null;
+let mfaResolver  = null;   // guarda o resolver para 2FA challenge
+let modal2FASecret = null;
+let modal2FASession = null;
+
+// ── Helpers ───────────────────────────────────────────────
+function loading(show){ document.getElementById('loadingOverlay').classList.toggle('show', show); }
+function showToast(msg, type='info'){
+    const t = document.getElementById('toast');
+    const icons = { success:'circle-check', error:'circle-xmark', info:'circle-info' };
+    t.className = 'toast show ' + type;
+    t.innerHTML = `<i class="fa-solid fa-${icons[type]||'circle-info'}"></i> ${msg}`;
+    setTimeout(() => t.classList.remove('show'), 3500);
+}
+function showAlert(id, msg, type='error'){
+    const el = document.getElementById(id);
+    el.className = 'auth-alert ' + type;
+    el.innerHTML = `<i class="fa-solid fa-${type==='error'?'circle-xmark':'circle-info'}"></i> ${msg}`;
+}
+window.togglePw = function(inputId, iconId){
+    const inp = document.getElementById(inputId);
+    const ico = document.getElementById(iconId);
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+    ico.className = inp.type === 'password' ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+};
+
+// ── OTP auto-advance ──────────────────────────────────────
+function initOtpInputs(containerId){
+    document.querySelectorAll(`#${containerId} input`).forEach((inp, i, all) => {
+        inp.addEventListener('input', () => {
+            inp.value = inp.value.replace(/\D/g,'');
+            if (inp.value && i < all.length - 1) all[i+1].focus();
+        });
+        inp.addEventListener('keydown', e => {
+            if (e.key === 'Backspace' && !inp.value && i > 0) all[i-1].focus();
+        });
+    });
+}
+initOtpInputs('otpChallenge');
+initOtpInputs('otpModal');
+
+function getOtpValue(containerId){
+    return [...document.querySelectorAll(`#${containerId} input`)].map(i => i.value).join('');
+}
+function clearOtp(containerId){
+    document.querySelectorAll(`#${containerId} input`).forEach(i => i.value = '');
+    const first = document.querySelector(`#${containerId} input`);
+    if (first) first.focus();
+}
+
+// ── Telas ─────────────────────────────────────────────────
+function mostrarLogin(){ document.getElementById('loginScreen').style.display='block'; document.getElementById('twoFAChallenge').style.display='none'; document.getElementById('resetScreen').style.display='none'; }
+window.mostrarReset = function(){ document.getElementById('loginScreen').style.display='none'; document.getElementById('resetScreen').style.display='block'; document.getElementById('twoFAChallenge').style.display='none'; };
+function mostrarChallenge2FA(){ document.getElementById('loginScreen').style.display='none'; document.getElementById('twoFAChallenge').style.display='block'; clearOtp('otpChallenge'); }
+
+// ── Auth state ────────────────────────────────────────────
+onAuthStateChanged(auth, async user => {
+    if (user) {
+        currentUser = user;
+        await carregarDashboard(user);
+        document.getElementById('loginArea').style.display = 'none';
+        document.getElementById('dashboardArea').style.display = 'block';
+    }
+});
+
+// ── LOGIN COM E-MAIL ──────────────────────────────────────
+window.fazerLogin = async function(){
+    const email = document.getElementById('loginEmail').value.trim();
+    const senha = document.getElementById('loginSenha').value;
+    if (!email || !senha){ showAlert('loginAlert','Preencha e-mail e senha.'); return; }
+
+    const btn = document.getElementById('btnLogin');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Entrando...';
+    document.getElementById('loginAlert').className = 'auth-alert';
+
+    try {
+        await signInWithEmailAndPassword(auth, email, senha);
+        // onAuthStateChanged cuida do redirect
+    } catch(err) {
+        if (err.code === 'auth/multi-factor-auth-required') {
+            mfaResolver = getMultiFactorResolver(auth, err);
+            mostrarChallenge2FA();
+        } else {
+            const msgs = {
+                'auth/user-not-found': 'Nenhuma conta com este e-mail.',
+                'auth/wrong-password': 'Senha incorreta.',
+                'auth/invalid-credential': 'E-mail ou senha incorretos.',
+                'auth/too-many-requests': 'Muitas tentativas. Tente mais tarde.',
+            };
+            showAlert('loginAlert', msgs[err.code] || 'Erro ao entrar. Tente novamente.');
+        }
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar';
+    }
+};
+
+document.getElementById('loginSenha').addEventListener('keydown', e => { if(e.key==='Enter') window.fazerLogin(); });
+
+// ── LOGIN GOOGLE ──────────────────────────────────────────
+window.loginGoogle = async function(){
+    loading(true);
+    try {
+        const result = await signInWithPopup(auth, googleProvider);
+        await setDoc(doc(db, 'usuarios', result.user.uid), {
+            uid: result.user.uid, email: result.user.email,
+            nome: result.user.displayName, fotoUrl: result.user.photoURL,
+            provider: 'google', ultimoLogin: serverTimestamp()
+        }, { merge: true });
+        loading(false);
+    } catch(err) {
+        loading(false);
+        if (err.code !== 'auth/popup-closed-by-user') showAlert('loginAlert','Erro ao entrar com Google.');
+    }
+};
+
+// ── 2FA CHALLENGE (login) ─────────────────────────────────
+window.verificarDesafio2FA = async function(){
+    const code = getOtpValue('otpChallenge');
+    if (code.length !== 6){ showAlert('twoFAChallengeAlert','Digite os 6 dígitos.'); return; }
+
+    const btn = document.getElementById('btnVerify2FA');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verificando...';
+
+    try {
+        const hint = mfaResolver.hints[0];
+        const assertion = TotpMultiFactorGenerator.assertionForSignIn(hint.uid, code);
+        await mfaResolver.resolveSignIn(assertion);
+        // onAuthStateChanged cuida do resto
+    } catch(e) {
+        showAlert('twoFAChallengeAlert', 'Código inválido. Tente novamente.');
+        clearOtp('otpChallenge');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Verificar';
+    }
+};
+
+// ── RESET SENHA ───────────────────────────────────────────
+window.mostrarLogin = mostrarLogin;
+window.enviarReset  = async function(){
+    const email = document.getElementById('resetEmail').value.trim();
+    if (!email){ showAlert('resetAlert','Insira seu e-mail.'); return; }
+    try {
+        await sendPasswordResetEmail(auth, email);
+        showAlert('resetAlert', 'Link enviado! Verifique sua caixa de entrada.', 'info');
+    } catch(e) {
+        showAlert('resetAlert', e.code === 'auth/user-not-found' ? 'Nenhuma conta com este e-mail.' : 'Erro ao enviar. Tente novamente.');
+    }
+};
+
+// ── CARREGAR DASHBOARD ────────────────────────────────────
+async function carregarDashboard(user){
+    // Avatar
+    const avatarEl = document.getElementById('dashAvatar');
+    if (user.photoURL) {
+        avatarEl.innerHTML = `<img src="${user.photoURL}" alt="Avatar" class="avatar">`;
+    } else {
+        const inicial = (user.displayName || user.email || 'U')[0].toUpperCase();
+        avatarEl.innerHTML = `<div class="avatar-placeholder">${inicial}</div>`;
+    }
+
+    document.getElementById('dashNome').textContent = user.displayName || user.email;
+    document.getElementById('dashEmail').textContent = user.email;
+    document.getElementById('infoNome').textContent  = user.displayName || '—';
+    document.getElementById('infoEmail').textContent = user.email;
+
+    // Provider
+    const prov = user.providerData[0]?.providerId || 'email';
+    document.getElementById('infoProvider').textContent = prov === 'google.com' ? 'Google' : 'E-mail / Senha';
+
+    // Dados do Firestore
+    try {
+        const snap = await getDoc(doc(db, 'usuarios', user.uid));
+        if (snap.exists()) {
+            const data = snap.data();
+            const dt = data.criadoEm?.toDate?.() || new Date();
+            document.getElementById('infoData').textContent = dt.toLocaleDateString('pt-BR');
+            atualizar2FAStatus(data.twoFAAtivo || false);
+        }
+    } catch(e) {
+        document.getElementById('infoData').textContent = new Date().toLocaleDateString('pt-BR');
+        atualizar2FAStatus(false);
+    }
+
+    iniciarCountdownDash();
+}
+
+function atualizar2FAStatus(ativo){
+    document.getElementById('dash2FABadge').textContent = ativo ? '🛡 2FA Ativo' : '⚠ 2FA Inativo';
+    document.getElementById('dash2FABadge').className   = 'dash-badge ' + (ativo ? 'badge-2fa-on' : 'badge-2fa-off');
+    document.getElementById('info2FA').textContent      = ativo ? 'Ativo' : 'Inativo';
+    document.getElementById('info2FA').className        = 'status-chip ' + (ativo ? 'chip-ok' : 'chip-warn');
+    document.getElementById('label2FA').textContent     = ativo ? '2FA ativo — sua conta está protegida' : 'Adicione uma camada extra de segurança';
+    document.getElementById('btn2FAToggle').innerHTML   = ativo
+        ? '<i class="fa-solid fa-shield-xmark"></i> Desativar'
+        : '<i class="fa-solid fa-shield-plus"></i> Ativar';
+}
+
+// ── TROCAR SENHA ──────────────────────────────────────────
+window.trocarSenha = async function(){
+    const nova = document.getElementById('senhaNova').value;
+    const conf = document.getElementById('senhaConf').value;
+    if (!nova || nova.length < 8){ showToast('Mínimo 8 caracteres.','error'); return; }
+    if (nova !== conf){ showToast('As senhas não coincidem.','error'); return; }
+    try {
+        await updatePassword(currentUser, nova);
+        showToast('Senha alterada com sucesso!','success');
+        document.getElementById('senhaNova').value = '';
+        document.getElementById('senhaConf').value = '';
+    } catch(e) {
+        if (e.code === 'auth/requires-recent-login')
+            showToast('Por segurança, saia e entre novamente antes de trocar a senha.','error');
+        else showToast('Erro ao alterar senha.','error');
+    }
+};
+
+// ── GERENCIAR 2FA ─────────────────────────────────────────
+window.gerenciar2FA = async function(){
+    if (!currentUser) return;
+    const snap = await getDoc(doc(db, 'usuarios', currentUser.uid));
+    const twoFAAtivo = snap.exists() && snap.data().twoFAAtivo;
+    if (twoFAAtivo) {
+        if (!confirm('Deseja desativar a verificação em 2 etapas?')) return;
+        try {
+            const mfaUser = multiFactor(currentUser);
+            for (const factor of mfaUser.enrolledFactors) {
+                await mfaUser.unenroll(factor);
+            }
+            await setDoc(doc(db, 'usuarios', currentUser.uid), { twoFAAtivo: false }, { merge: true });
+            atualizar2FAStatus(false);
+            showToast('2FA desativado.','info');
+        } catch(e) {
+            showToast('Erro ao desativar 2FA. Tente novamente.','error');
+        }
+        return;
+    }
+    // Ativar: abrir modal
+    abrirModal2FA();
+};
+
+async function abrirModal2FA(){
+    const modal = document.getElementById('modal2FA');
+    modal.style.display = 'flex';
+    document.getElementById('modal2FAqr').innerHTML = '<div style="width:160px;height:160px;background:#f0ebff;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#9ca3af"><i class="fa-solid fa-spinner fa-spin fa-2x"></i></div>';
+    document.getElementById('modal2FAkey').textContent = 'Gerando...';
+    clearOtp('otpModal');
+    try {
+        const mfaUser = multiFactor(currentUser);
+        modal2FASession = await mfaUser.getSession();
+        modal2FASecret  = await TotpMultiFactorGenerator.generateSecret(modal2FASession);
+        const qrUrl = modal2FASecret.generateQrCodeUrl(currentUser.email, 'L-Hub');
+        document.getElementById('modal2FAqr').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrUrl)}" width="160" height="160" style="border-radius:12px;border:3px solid white;box-shadow:0 4px 20px rgba(0,0,0,.12)">`;
+        document.getElementById('modal2FAkey').textContent = modal2FASecret.secretKey;
+    } catch(e) {
+        console.warn('2FA modal error:', e);
+        fecharModal2FA();
+        showToast('Erro ao gerar QR Code. Tente novamente.','error');
+    }
+}
+
+window.fecharModal2FA = function(){ document.getElementById('modal2FA').style.display='none'; };
+
+window.confirmarModal2FA = async function(){
+    const code = getOtpValue('otpModal');
+    if (code.length !== 6){ showAlert('modal2FAAlert','Digite os 6 dígitos do código.'); return; }
+    try {
+        const cred = TotpMultiFactorGenerator.assertionForEnrollment(modal2FASecret, code);
+        await multiFactor(currentUser).enroll(cred, 'Autenticador L-Hub');
+        await setDoc(doc(db, 'usuarios', currentUser.uid), { twoFAAtivo: true }, { merge: true });
+        fecharModal2FA();
+        atualizar2FAStatus(true);
+        showToast('2FA ativado com sucesso! Conta protegida.','success');
+    } catch(e) {
+        showAlert('modal2FAAlert','Código inválido ou expirado. Tente novamente.');
+        clearOtp('otpModal');
+    }
+};
+
+// ── LOGOUT ────────────────────────────────────────────────
+window.fazerLogout = async function(){
+    await signOut(auth);
+    document.getElementById('dashboardArea').style.display = 'none';
+    document.getElementById('loginArea').style.display = 'block';
+    mostrarLogin();
+    showToast('Você saiu da sua conta.','info');
+};
+
+// ── COUNTDOWN ─────────────────────────────────────────────
+function iniciarCountdownDash(){
+    const target = new Date('2026-06-15T09:00:00').getTime();
+    function atualizar(){
+        const diff = target - Date.now(); if (diff <= 0) return;
+        const pad = v => String(v).padStart(2,'0');
+        document.getElementById('cdDias').textContent  = pad(Math.floor(diff/86400000));
+        document.getElementById('cdHoras').textContent = pad(Math.floor((diff%86400000)/3600000));
+        document.getElementById('cdMin').textContent   = pad(Math.floor((diff%3600000)/60000));
+        document.getElementById('cdSeg').textContent   = pad(Math.floor((diff%60000)/1000));
+    }
+    atualizar(); setInterval(atualizar, 1000);
+}
+</script>
+<script src="../js/java.js"></script>
+</body>
+</html>

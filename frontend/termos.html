@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termos de Uso — L-Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .inner-hero {
+            background: linear-gradient(135deg, #1a1025 0%, var(--primary-dark) 60%, #0a2940 100%);
+            padding: 7rem 0 5rem;
+            position: relative; overflow: hidden;
+        }
+        .inner-hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 60% at 80% 30%, rgba(6,123,194,0.2) 0%, transparent 70%);
+        }
+        .inner-hero .container { position: relative; z-index: 1; }
+        .inner-hero-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 100px; padding: 0.4rem 1rem;
+            font-size: 0.8rem; font-weight: 600; color: var(--primary-light);
+            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.5rem;
+        }
+        .inner-hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem); font-weight: 800;
+            color: white; letter-spacing: -0.03em; margin-bottom: 1rem;
+        }
+        .inner-hero h1 span { color: var(--accent-warm); }
+        .inner-hero p { font-size: 1rem; color: rgba(255,255,255,0.6); max-width: 500px; }
+        .update-badge {
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            background: rgba(255,179,187,0.15); border: 1px solid rgba(255,179,187,0.3);
+            border-radius: 100px; padding: 0.35rem 0.9rem;
+            font-size: 0.8rem; color: var(--accent-warm); margin-top: 1.25rem;
+        }
+
+        .policy-layout {
+            display: grid; grid-template-columns: 260px 1fr;
+            gap: 3rem; align-items: start; padding: 4rem 0;
+        }
+        @media(max-width:860px){ .policy-layout { grid-template-columns: 1fr; } .policy-sidebar { display: none; } }
+
+        .policy-sidebar {
+            position: sticky; top: 100px;
+            background: white; border-radius: 16px;
+            border: 1px solid rgba(48,26,75,0.08); padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(48,26,75,0.06);
+        }
+        .policy-sidebar h6 {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.1em; color: #9b8fb0; margin-bottom: 1rem;
+        }
+        .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; }
+        .sidebar-nav a {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.75rem; border-radius: 8px;
+            font-size: 0.88rem; color: #5a5070;
+            text-decoration: none; transition: all 0.2s;
+        }
+        .sidebar-nav a:hover { background: rgba(6,123,194,0.08); color: var(--primary); }
+        .sidebar-nav a i { font-size: 0.75rem; opacity: 0.6; min-width: 14px; }
+
+        .policy-content section {
+            background: white; border-radius: 20px;
+            padding: 2.25rem; margin-bottom: 1.5rem;
+            border: 1px solid rgba(48,26,75,0.06);
+            box-shadow: 0 4px 20px rgba(48,26,75,0.05);
+        }
+        .policy-content section h2 {
+            font-size: 1.25rem; font-weight: 700; color: var(--primary-dark);
+            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;
+        }
+        .section-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: linear-gradient(135deg, var(--primary-dark), #301A4B);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 0.9rem; flex-shrink: 0;
+        }
+        .policy-content p { font-size: 0.95rem; color: #5a5070; line-height: 1.8; margin-bottom: 0.85rem; }
+        .policy-content p:last-child { margin-bottom: 0; }
+        .policy-content ul { margin: 0.75rem 0 0.85rem 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; }
+        .policy-content ul li { font-size: 0.93rem; color: #5a5070; line-height: 1.65; }
+        .policy-content strong { color: var(--primary-dark); }
+
+        .warn-box {
+            background: rgba(255,179,187,0.12); border: 1px solid rgba(255,179,187,0.35);
+            border-radius: 12px; padding: 1rem 1.25rem; margin: 1rem 0;
+            font-size: 0.9rem; color: #7a2040;
+            display: flex; gap: 0.75rem; align-items: flex-start;
+        }
+        .warn-box i { color: #e74c8b; margin-top: 0.1rem; flex-shrink: 0; }
+
+        .contact-terms {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 20px; padding: 2.25rem; color: white;
+        }
+        .contact-terms p { color: rgba(255,255,255,0.7) !important; }
+        .contact-terms a { color: #84BCDA; }
+    </style>
+</head>
+<body>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-house" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary">
+                <i class="fa-solid fa-circle-user"></i> Minha Área
+            </a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscrições</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas Anteriores</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html"><i class="fa-solid fa-circle-user"></i> Minha Área</a>
+    </div>
+</header>
+
+<section class="inner-hero">
+    <div class="container">
+        <div class="inner-hero-badge"><i class="fa-solid fa-file-contract"></i> Legal</div>
+        <h1>Termos de <span>Uso</span></h1>
+        <p>Leia com atenção antes de usar a plataforma. Ao se cadastrar, você concorda com estes termos.</p>
+        <!-- ⬇️ EDITE: atualize a data da última revisão -->
+        <div class="update-badge"><i class="fa-solid fa-clock"></i> Última atualização: 16/02/2026</div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="policy-layout">
+        <aside class="policy-sidebar">
+            <h6>Conteúdo</h6>
+            <ul class="sidebar-nav">
+                <li><a href="#t1"><i class="fa-solid fa-circle-dot"></i> Aceitação</a></li>
+                <li><a href="#t2"><i class="fa-solid fa-circle-dot"></i> Cadastro</a></li>
+                <li><a href="#t3"><i class="fa-solid fa-circle-dot"></i> Uso permitido</a></li>
+                <li><a href="#t4"><i class="fa-solid fa-circle-dot"></i> Proibições</a></li>
+                <li><a href="#t5"><i class="fa-solid fa-circle-dot"></i> Propriedade intelectual</a></li>
+                <li><a href="#t6"><i class="fa-solid fa-circle-dot"></i> Responsabilidades</a></li>
+                <li><a href="#t7"><i class="fa-solid fa-circle-dot"></i> Suspensão</a></li>
+                <li><a href="#t8"><i class="fa-solid fa-circle-dot"></i> Legislação</a></li>
+                <li><a href="#t9"><i class="fa-solid fa-circle-dot"></i> Contato</a></li>
+            </ul>
+        </aside>
+
+        <div class="policy-content">
+
+            <section id="t1">
+                <h2><div class="section-icon"><i class="fa-solid fa-handshake"></i></div> Aceitação dos Termos</h2>
+                <p>Ao acessar ou utilizar a plataforma <strong>L-Hub</strong>, você declara ter lido, compreendido e concordado integralmente com estes Termos de Uso. Caso não concorde com qualquer disposição, você não deve utilizar a plataforma.</p>
+                <!-- ⬇️ EDITE: substitua com o nome jurídico correto -->
+                <p>Estes Termos constituem um acordo legal entre você ("Usuário") e <strong>Learning Hub Inovation</strong>, inscrita no CNPJ sob o nº <strong></strong> ("L-Hub").</p>
+            </section>
+
+            <section id="t2">
+                <h2><div class="section-icon"><i class="fa-solid fa-user-plus"></i></div> Cadastro e Conta</h2>
+                <p>Para acessar funcionalidades completas da plataforma, é necessário criar uma conta. Ao fazê-lo, você se compromete a:</p>
+                <ul>
+                    <li>Fornecer informações verdadeiras, precisas e atualizadas.</li>
+                    <li>Manter a confidencialidade de sua senha e não compartilhá-la.</li>
+                    <li>Notificar imediatamente a L-Hub sobre qualquer uso não autorizado da sua conta.</li>
+                    <li>Ser responsável por todas as atividades realizadas em sua conta.</li>
+                </ul>
+                <div class="warn-box">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Contas criadas com dados falsos ou duplicadas poderão ser suspensas sem aviso prévio.</span>
+                </div>
+            </section>
+
+            <section id="t3">
+                <h2><div class="section-icon"><i class="fa-solid fa-check-circle"></i></div> Uso permitido</h2>
+                <p>A plataforma L-Hub é destinada exclusivamente para:</p>
+                <ul>
+                    <li>Acesso a simulados, provas anteriores e materiais de estudo disponibilizados pela plataforma.</li>
+                    <li>Inscrição em processos seletivos gerenciados pela plataforma.</li>
+                    <li>Acompanhamento de cronograma, desempenho e resultados pessoais.</li>
+                    <li>Uso pessoal e não comercial, por pessoa física.</li>
+                </ul>
+            </section>
+
+            <section id="t4">
+                <h2><div class="section-icon"><i class="fa-solid fa-ban"></i></div> Condutas proibidas</h2>
+                <p>É estritamente vedado ao usuário:</p>
+                <ul>
+                    <li>Compartilhar login e senha com terceiros.</li>
+                    <li>Reproduzir, redistribuir ou comercializar conteúdos da plataforma sem autorização.</li>
+                    <li>Utilizar robôs, scrapers ou qualquer meio automatizado para acessar o sistema.</li>
+                    <li>Tentar invadir, comprometer ou prejudicar a segurança da plataforma.</li>
+                    <li>Enviar conteúdo ofensivo, falso ou que viole direitos de terceiros.</li>
+                    <li>Criar múltiplas contas para burlar regras ou processos seletivos.</li>
+                </ul>
+            </section>
+
+            <section id="t5">
+                <h2><div class="section-icon"><i class="fa-solid fa-copyright"></i></div> Propriedade intelectual</h2>
+                <p>Todo o conteúdo disponibilizado na plataforma L-Hub — incluindo textos, questões, simulados, layout, logotipo e código — é protegido por direitos autorais e pertence à L-Hub ou seus licenciadores.</p>
+                <p>É permitido ao usuário acessar e utilizar os conteúdos exclusivamente para fins pessoais de estudo. Qualquer uso comercial ou reprodução não autorizada é proibido e sujeito às penalidades legais cabíveis.</p>
+            </section>
+
+            <section id="t6">
+                <h2><div class="section-icon"><i class="fa-solid fa-shield-halved"></i></div> Limitação de responsabilidade</h2>
+                <p>A L-Hub não garante que a plataforma estará disponível de forma ininterrupta, livre de erros ou totalmente segura. Na máxima extensão permitida por lei, a L-Hub não se responsabiliza por:</p>
+                <ul>
+                    <li>Danos decorrentes de interrupções ou falhas técnicas.</li>
+                    <li>Perda de dados causada por uso indevido do usuário.</li>
+                    <li>Resultados de candidatos em processos seletivos.</li>
+                    <!-- ⬇️ EDITE: adicione outras exclusões de responsabilidade conforme necessário -->
+                </ul>
+            </section>
+
+            <section id="t7">
+                <h2><div class="section-icon"><i class="fa-solid fa-user-xmark"></i></div> Suspensão e encerramento</h2>
+                <p>A L-Hub reserva-se o direito de suspender ou encerrar contas de usuários que violem estes Termos, sem necessidade de aviso prévio.</p>
+                <p>O usuário também pode encerrar sua conta a qualquer momento, mediante solicitação pelo canal de contato da plataforma. O encerramento não isenta o usuário de responsabilidades por condutas anteriores.</p>
+            </section>
+
+            <section id="t8">
+                <h2><div class="section-icon"><i class="fa-solid fa-scale-balanced"></i></div> Legislação aplicável</h2>
+                <!-- ⬇️ EDITE: confirme o foro de eleição conforme sua localização -->
+                <p>Estes Termos são regidos pelas leis brasileiras. Quaisquer disputas serão submetidas ao foro da comarca de <strong>[CIDADE/ESTADO]</strong>, com renúncia expressa a qualquer outro, por mais privilegiado que seja.</p>
+                <p>A utilização da plataforma está sujeita ainda ao <strong>Código de Defesa do Consumidor (Lei nº 8.078/1990)</strong>, ao <strong>Marco Civil da Internet (Lei nº 12.965/2014)</strong> e à <strong>LGPD (Lei nº 13.709/2018)</strong>.</p>
+            </section>
+
+            <div class="contact-terms" id="t9">
+                <h2 style="color:white;font-size:1.25rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;">
+                    <span style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-envelope"></i></span>
+                    Dúvidas sobre os Termos?
+                </h2>
+                <p>Entre em contato conosco se tiver alguma dúvida sobre estes Termos de Uso.</p>
+                <!-- ⬇️ EDITE: e-mail de suporte jurídico/contato -->
+                <p><strong style="color:white;">E-mail:</strong> <a href="mailto:joaomenkdev@gmail.com">joaomenkdev@gmail.com</a></p>
+                <p><strong style="color:white;">Telefone:</strong> (15) 99857-4050</p>
+                <p><strong style="color:white;">Endereço:</strong> St Aurélio Moura, 138 — Angatuba, SP</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparação para processos seletivos.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html">Inscrições</a></li>
+                    <li><a href="noticias.html">Notícias</a></li>
+                    <li><a href="provas.html">Provas</a></li>
+                    <li><a href="simulados.html">Simulado</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Empresa</h5>
+                <ul class="footer-links">
+                    <li><a href="sobre.html">Sobre nós</a></li>
+                    <li><a href="privacidade.html">Política de Privacidade</a></li>
+                    <li><a href="termos.html">Termos de Uso</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item"><i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com</div>
+                <div class="contact-item"><i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050</div>
+                <div class="contact-item"><i class="fa-solid fa-location-dot contact-icon"></i> St Aurélio Moura, 138 — Angatuba, SP</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+
+<script src="../js/java.js"></script>
+</body>
+</html>
