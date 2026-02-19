@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L-Hub — Plataforma de Aprendizado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ========== HEADER ========== -->
+<header>
+    <nav class="container">
+        <div class="logo">L-Hub</div>
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Início</a></li>
+            <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+            <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+            <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+            <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+            <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+            <li><a href="area-candidato.html" class="btn btn-primary" id="navMinhaArea">
+                <i class="fa-solid fa-circle-user"></i> <span id="navUserLabel">Minha Área</span>
+            </a></li>
+        </ul>
+        <button class="menu-toggle" id="menuBtn" aria-label="Menu">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" id="menuIcon">
+                <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+        <a href="inscricao.html"><i class="fa-solid fa-pen-to-square"></i> Inscrições</a>
+        <a href="noticias.html"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+        <a href="provas.html"><i class="fa-solid fa-scroll"></i> Provas Anteriores</a>
+        <a href="cronograma.html"><i class="fa-solid fa-calendar-days"></i> Cronograma</a>
+        <a href="simulados.html"><i class="fa-solid fa-brain"></i> Simulado</a>
+        <a href="area-candidato.html" id="mobileNavMinhaArea"><i class="fa-solid fa-circle-user"></i> <span id="mobileNavUserLabel">Minha Área</span></a>
+    </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div class="hero-orb hero-orb-4"></div>
+
+    <div class="hero-grid container">
+        <div class="hero-content">
+            <p style="color:rgba(255,255,255,0.55);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem;">
+                <i class="fa-solid fa-bolt" style="color:#ffb3bb"></i>&nbsp; Plataforma L-Hub 2026
+            </p>
+            <h1>Conquiste seu <span>objetivo</span> com inteligência</h1>
+            <p>Acesse simulados adaptativos, cronogramas personalizados e materiais premium para ir além.</p>
+
+            <div class="countdown-box">
+                <div class="countdown-header">
+                    <i class="fa-solid fa-hourglass-half" style="color:#84BCDA"></i>
+                    Próxima avaliação
+                </div>
+                <div class="countdown-grid">
+                    <div class="countdown-item" data-tooltip="Dias restantes">
+                        <div class="countdown-value" id="days">00</div>
+                        <div class="countdown-label">Dias</div>
+                    </div>
+                    <div class="countdown-item" data-tooltip="Horas">
+                        <div class="countdown-value" id="hours">00</div>
+                        <div class="countdown-label">Horas</div>
+                    </div>
+                    <div class="countdown-item" data-tooltip="Minutos">
+                        <div class="countdown-value" id="minutes">00</div>
+                        <div class="countdown-label">Min</div>
+                    </div>
+                    <div class="countdown-item" data-tooltip="Segundos">
+                        <div class="countdown-value" id="seconds">00</div>
+                        <div class="countdown-label">Seg</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-ctas">
+                <a href="inscricao.html" class="btn btn-primary btn-large">
+                    <i class="fa-solid fa-rocket"></i> Começar agora
+                </a>
+                <a href="simulados.html" class="btn btn-ghost btn-large">
+                    <i class="fa-solid fa-play"></i> Ver simulados
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-card-stack">
+                <div class="hcard hcard-back1">
+                    <div class="hcard-icon"><i class="fa-solid fa-chart-line" style="color:#84BCDA"></i></div>
+                    <div class="hcard-title">Desempenho Geral</div>
+                    <div class="hcard-sub">Evolução semanal</div>
+                </div>
+                <div class="hcard hcard-back2">
+                    <div class="hcard-icon"><i class="fa-solid fa-trophy" style="color:#ffb3bb"></i></div>
+                    <div class="hcard-title">Ranking Nacional</div>
+                    <div class="hcard-sub">Top 12%</div>
+                </div>
+                <div class="hcard hcard-main">
+                    <div class="hcard-icon"><i class="fa-solid fa-graduation-cap" style="color:#84BCDA;font-size:1.75rem"></i></div>
+                    <div class="hcard-title">Progresso de Estudos</div>
+                    <div class="hcard-sub">Matemática · Redação · Ciências</div>
+                    <div class="hcard-progress">
+                        <div class="hcard-bar-label"><span>Matemática</span><span>78%</span></div>
+                        <div class="hcard-bar"><div class="hcard-bar-fill" style="width:78%"></div></div>
+                        <div class="hcard-bar-label" style="margin-top:.6rem"><span>Português</span><span>63%</span></div>
+                        <div class="hcard-bar"><div class="hcard-bar-fill" style="width:63%"></div></div>
+                        <div class="hcard-bar-label" style="margin-top:.6rem"><span>Ciências</span><span>91%</span></div>
+                        <div class="hcard-bar"><div class="hcard-bar-fill" style="width:91%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== ETAPAS ========== -->
+<section class="section steps-section" id="etapas">
+    <div class="container">
+        <h2 class="section-title animate-on-scroll">Sua jornada de preparação</h2>
+        <p class="section-subtitle animate-on-scroll delay-1">Cada etapa foi desenhada para maximizar seu desempenho</p>
+
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-icon completed">
+                    <i class="fa-solid fa-check" style="color:white;font-size:1.25rem"></i>
+                </div>
+                <h4 class="step-title">Cadastro</h4>
+                <p class="step-description">Crie sua conta e configure seu perfil de estudos em minutos.</p>
+            </div>
+            <div class="step-card active">
+                <div class="step-badge">Em andamento</div>
+                <div class="step-icon active">
+                    <i class="fa-solid fa-brain" style="color:white;font-size:1.2rem"></i>
+                </div>
+                <h4 class="step-title">Diagnóstico</h4>
+                <p class="step-description">Avaliamos seu nível atual para personalizar seu plano de estudos.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon pending">
+                    <i class="fa-solid fa-book-open" style="font-size:1.2rem"></i>
+                </div>
+                <h4 class="step-title">Treinamento</h4>
+                <p class="step-description">Simulados adaptativos e revisão inteligente baseada em IA.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-icon pending">
+                    <i class="fa-solid fa-medal" style="font-size:1.2rem"></i>
+                </div>
+                <h4 class="step-title">Aprovação</h4>
+                <p class="step-description">Chegue no dia da prova confiante e preparado para arrasar.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== SIMULADOS ========== -->
+<section class="section" id="simulados">
+    <div class="container">
+        <h2 class="section-title animate-on-scroll">Simulados disponíveis</h2>
+        <p class="section-subtitle animate-on-scroll delay-1">Pratique com questões atualizadas de cada disciplina</p>
+
+        <div class="filters">
+            <span class="filter-label"><i class="fa-solid fa-sliders"></i>&nbsp;Filtrar:</span>
+            <button class="filter-btn active" data-category="Todas">Todas</button>
+            <button class="filter-btn" data-category="Exatas">Exatas</button>
+            <button class="filter-btn" data-category="Humanas">Humanas</button>
+            <button class="filter-btn" data-category="Linguagens">Linguagens</button>
+            <button class="filter-btn" data-category="Ciências">Ciências</button>
+        </div>
+
+        <div class="simulados-grid">
+            <div class="simulado-card show" data-category="Exatas">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-square-root-variable" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">Matemática</h3>
+                <span class="difficulty-badge medio">Médio</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 90 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 45 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.8 · 2.3k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+
+            <div class="simulado-card show" data-category="Linguagens">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-language" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">Português</h3>
+                <span class="difficulty-badge facil">Fácil</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 60 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 30 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.6 · 3.1k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+
+            <div class="simulado-card show" data-category="Exatas">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-atom" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">Física</h3>
+                <span class="difficulty-badge dificil">Difícil</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 75 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 40 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.7 · 1.8k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+
+            <div class="simulado-card show" data-category="Exatas">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-flask" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">Química</h3>
+                <span class="difficulty-badge dificil">Difícil</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 70 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 35 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.5 · 1.5k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+
+            <div class="simulado-card show" data-category="Ciências">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-dna" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">Biologia</h3>
+                <span class="difficulty-badge medio">Médio</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 65 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 35 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.9 · 2.7k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+
+            <div class="simulado-card show" data-category="Humanas">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-landmark" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">História</h3>
+                <span class="difficulty-badge medio">Médio</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 60 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 30 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.4 · 1.2k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+
+            <div class="simulado-card show" data-category="Humanas">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-earth-americas" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">Geografia</h3>
+                <span class="difficulty-badge facil">Fácil</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 55 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 28 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.6 · 1.9k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+
+            <div class="simulado-card show" data-category="Linguagens">
+                <div class="simulado-icon-wrap"><i class="fa-solid fa-globe" style="color:white;font-size:1.4rem"></i></div>
+                <h3 class="simulado-title">Inglês</h3>
+                <span class="difficulty-badge facil">Fácil</span>
+                <div class="simulado-info">
+                    <div class="info-item"><i class="fa-regular fa-clock"></i> 45 minutos</div>
+                    <div class="info-item"><i class="fa-solid fa-list-check"></i> 25 questões</div>
+                    <div class="info-item"><i class="fa-regular fa-star"></i> 4.7 · 2.0k realizados</div>
+                </div>
+                <button class="simulado-btn"><i class="fa-solid fa-play"></i> Iniciar Simulado</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== NOTÍCIAS ========== -->
+<section class="section news-section" id="noticias">
+    <div class="container">
+        <div class="news-grid">
+            <div class="news-intro animate-on-scroll">
+                <h3>Últimas atualizações</h3>
+                <p>Fique por dentro de tudo que acontece no processo seletivo.</p>
+                <a href="noticias.html" class="btn btn-primary">
+                    <i class="fa-solid fa-arrow-right"></i> Ver todas
+                </a>
+            </div>
+
+            <div class="news-list">
+                <div class="news-card animate-on-scroll">
+                    <div class="news-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                    <div class="news-content">
+                        <div class="news-header">
+                            <h4 class="news-title">Edital 2026 disponível para consulta</h4>
+                            <span class="news-badge edital">Edital</span>
+                        </div>
+                        <p class="news-description">O edital completo já pode ser acessado no portal oficial com todas as regras e datas.</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="fa-regular fa-calendar"></i> 10 fev 2026</span>
+                            <span class="news-time"><i class="fa-regular fa-clock"></i> Há 4 dias</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="news-card animate-on-scroll delay-1">
+                    <div class="news-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                    <div class="news-content">
+                        <div class="news-header">
+                            <h4 class="news-title">Inscrições encerram em 15 de março</h4>
+                            <span class="news-badge urgente">Urgente</span>
+                        </div>
+                        <p class="news-description">Não deixe para a última hora. Garanta sua vaga antes do prazo final.</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="fa-regular fa-calendar"></i> 12 fev 2026</span>
+                            <span class="news-time"><i class="fa-regular fa-clock"></i> Ontem</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="news-card animate-on-scroll delay-2">
+                    <div class="news-icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="news-content">
+                        <div class="news-header">
+                            <h4 class="news-title">Locais de prova divulgados em maio</h4>
+                            <span class="news-badge importante">Importante</span>
+                        </div>
+                        <p class="news-description">Os locais serão publicados a partir de 20 de maio. Fique atento ao seu e-mail.</p>
+                        <div class="news-meta">
+                            <span class="news-date"><i class="fa-regular fa-calendar"></i> 13 fev 2026</span>
+                            <span class="news-time"><i class="fa-regular fa-clock"></i> Hoje</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer>
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h4>L-<span>Hub</span></h4>
+                <p>Plataforma inteligente de preparação para processos seletivos. Tecnologia e método a favor do seu futuro.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link" data-tooltip="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="social-link" data-tooltip="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="social-link" data-tooltip="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link" data-tooltip="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h5>Plataforma</h5>
+                <ul class="footer-links">
+                    <li><a href="inscricao.html"><i class="fa-solid fa-pen-to-square" style="opacity:.6;font-size:.8em"></i> Inscrições</a></li>
+                    <li><a href="noticias.html"><i class="fa-solid fa-newspaper" style="opacity:.6;font-size:.8em"></i> Notícias</a></li>
+                    <li><a href="provas.html"><i class="fa-solid fa-scroll" style="opacity:.6;font-size:.8em"></i> Provas</a></li>
+                    <li><a href="cronograma.html"><i class="fa-solid fa-calendar-days" style="opacity:.6;font-size:.8em"></i> Cronograma</a></li>
+                    <li><a href="simulados.html"><i class="fa-solid fa-brain" style="opacity:.6;font-size:.8em"></i> Simulado</a></li>
+                    <li><a href="area-candidato.html"><i class="fa-solid fa-circle-user" style="opacity:.6;font-size:.8em"></i> Minha Área</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Empresa</h5>
+                <ul class="footer-links">
+                    <li><a href="sobre.html">Sobre nós</a></li>
+                    <li><a href="privacidade.html">Política de Privacidade</a></li>
+                    <li><a href="termos.html">Termos de Uso</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h5>Contato</h5>
+                <div class="contact-item">
+                    <i class="fa-regular fa-envelope contact-icon"></i> joaomenkdev@gmail.com
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-phone contact-icon"></i> (15) 99857-4050
+                </div>
+                <div class="contact-item">
+                    <i class="fa-solid fa-location-dot contact-icon"></i> St Aurélio Moura, 138 — Angatuba, SP
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 L-Hub. Todos os direitos reservados.</p>
+            <p>Feito com <i class="fa-solid fa-heart" style="color:#ffb3bb"></i> para estudantes brasileiros</p>
+        </div>
+    </div>
+</footer>
+
+<!-- ========== TOAST DE BOAS-VINDAS ========== -->
+<div id="welcome-toast" role="alert" aria-live="polite">
+  <div class="toast-icon"><i class="fa-solid fa-check-circle"></i></div>
+  <div class="toast-body">
+    <div class="toast-title" id="toast-title">Bem-vindo de volta! 👋</div>
+    <div class="toast-msg" id="toast-msg">Você entrou com sucesso. Bons estudos!</div>
+  </div>
+  <button class="toast-close" id="toast-close" aria-label="Fechar"><i class="fa-solid fa-xmark"></i></button>
+  <div class="toast-progress-bar" id="toast-bar"></div>
+</div>
+
+<script src="../js/java.js"></script>
+</body>
+</html>
